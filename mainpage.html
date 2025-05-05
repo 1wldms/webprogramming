@@ -1,16 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Style-It</title>
-    <!-- <link rel="stylesheet" href="style.css"> 필요시 CSS 연결 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style-It | Welcome</title>
+  <!-- <link rel="stylesheet" href="style.css"> CSS 연결 -->
+
+  <style>
+    /* Basic full-page layout */
+    body {
+      background-color: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Login box styling */
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .login-box p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-
-    <h1>Welcome!</h1>
-    <p> Let us style your clothes for you</p>
-
-    <!-- <script src="script.js"></script> 필요시 JS 연결 -->
+  <div class="login-box">
+    <h2>Welcome to Style-It!</h2>
+    <p>Let us help you choose the perfect outfit based on your current location, weather, and personal style. Stay comfortable and stylish, no matter where you are!</p>
+    <a href="signup.html" class="btn">Sign up</a>
+  </div>
 </body>
 </html>
