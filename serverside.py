@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -13,19 +14,33 @@ def index():
 
 users = {}
 
-@app.route('/signup', methods = ["GET", "POST"])
+@app.route('/signup', methods = ['GET','POST'])
 def signup():
-    if request.method == "POST": 
-        username = request.form['username'] 
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['pwd']
         
-        if username in users:
-            return "이미 존재하는 사용자입니다."
         
-        users[username] = password
-        return redirect(url_for('login'))
-    else:
-        return render_template('signup.html')
-
+        conn = sqlite3.connect('test.db')
+        cursor = conn.cursor()
+        q = "INSERT INTO users (username,password) VALUES ?;"
+        cursor.execute(q,(username,))
+        user_existing = cursor.fetchone()
+        
+        
+        if user_existing:
+            flash('existing ID')
+            conn.close()
+            return render_template('signup.html')
+        else:
+            q = "INSERT INTO users (username,password) VALUES (?, ?);"
+            cursor.execute(q,(username,password))
+            conn.commit()
+            conn.close()
+            flash('login~! good')
+            return redirect(url_for('login'))
+        
+    return render_template('signup.html')
 
 @app.route('/login', methods = ["GET", "POST"])
 def login():
@@ -33,13 +48,20 @@ def login():
         username = request.form['username']
         password = request.form['pwd']
         
-        if username in users and users[username] == password:
-            session['username'] = username 
-            return redirect(url_for('index'))
         
-        return render_template('login.html', error ="아이디 또는 비밀번호가 잘못되었습니다.")
-    else:
-        return render_template('login.html')
+        with sqlite3.connect('test.db') as conn:
+            cursor = conn.cursor()
+            q = "SELECT password FROM users WHERE username = ?;"
+            cursor.execute(q, (username, password))
+            user = cursor.fetchone()
+
+            if user:
+                return redirect(url_for('mainpage'))
+            else:
+                flash('Invalid ID. Please signup first')
+                return redirect(url_for('signup'))
+
+    return render_template('login.html')
 
 
 @app.route('/logout')
