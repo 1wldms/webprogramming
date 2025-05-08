@@ -1,57 +1,56 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 
-@app.route('/')
-def index():
-    ifLogin = False
-    if 'username' in session:
-        isLogin = True
-    return render_template('mainpage.html', isLogin = isLogin) 
+DB_user = 'user_info.db'
 
-DB_user = 'user&pwd.db'
 def init_db():
     if not os.path.exists(DB_user):
-        conn = sqlite3.connect('test.db')
+        conn = sqlite3.connect(DB_user)
         cursor = conn.cursor()
         cursor.execute('''
                     CREATE TABLE users(
                         username TEXT PRIMARY KEY,
-                        password TEXT NOT NULL
+                        password TEXT NOT NULL,
+                        gender TEXT NOT NULL
                     )
                     ''')
         conn.commit()
         conn.close()
 
-users = {}
+inti_db()
+
+@app.route('/')
+def index():
+    isLogin = 'username' in session
+    return render_template('mainpage.html', isLogin = isLogin) 
+
 
 @app.route('/signup', methods = ['GET','POST'])
 def signup():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['pwd']
+        gender = request.form['gender']
         
         
-        conn = sqlite3.connect(DB_user)
-        cursor = conn.cursor()
-        q = "INSERT INTO users (username,password) VALUES ?;"
-        cursor.execute(q,(username,))
-        user_existing = cursor.fetchone()
+        with sqlite3.connect(DB_user) as conn:
+            cursor = conn.cursor()
+            q = "INSERT INTO users (username,password) VALUES ?;"
+            cursor.execute(q,(username,))
+            user_existing = cursor.fetchone()
         
         
-        if user_existing:
-            flash('existing ID')
-            conn.close()
-            return render_template('signup.html')
-        else:
-            q = "INSERT INTO users (username,password) VALUES (?, ?);"
-            cursor.execute(q,(username,password))
-            conn.commit()
-            conn.close()
-            flash('login~! good')
-            return redirect(url_for('login'))
+            if user_existing:
+                flash('existing ID')
+                return render_template('signup.html')
+            else:
+                q = "INSERT INTO users (username,password,gender) VALUES (?,?,?);"
+                cursor.execute(q,(username,password))
+                return redirect(url_for('login'))
         
     return render_template('signup.html')
 
@@ -65,11 +64,12 @@ def login():
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             q = "SELECT password FROM users WHERE username = ?;"
-            cursor.execute(q, (username, password))
+            cursor.execute(q, (username,))
             user = cursor.fetchone()
 
-            if user:
-                return redirect(url_for('mainpage'))
+            if user and user[0] == password:
+                session['username'] = username
+                return redirect(url_for('index'))
             else:
                 flash('Invalid ID. Please signup first')
                 return redirect(url_for('signup'))
