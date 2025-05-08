@@ -70,10 +70,18 @@
     <h2>Welcome to Style-It!</h2>
     <p>Let us help you choose the perfect outfit based on your current location, weather, and personal style. Stay comfortable and stylish, no matter where you are!</p>
     
-    <!-- Button group -->
+    <!-- Button group 
     <div class="btn-group">
       <a href="login.html" class="btn">Log in</a>
       <a href="signup.html" class="btn">Sign up</a>
+    -->
+    
+    {% if isLogin %}
+      <a href="{{ url_for('logout') }}" class="btn">Log out</a>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="btn">Log in</a>
+      <a href="{{ url_for('signup') }}" class="btn">Sign up</a>
+    {% endif %}
     </div>
   </div>
 </body>

@@ -10,6 +10,16 @@
 <body>
   <div class="login-box">
     <h2>Style-It | Log In</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <form id="login-form" action="/login" method="POST">
       <div class="form-group">
         <label for="username">Username (ID)</label>
@@ -24,7 +34,7 @@
 
       <button type="submit" id="login-btn" class="btn" disabled>Log In</button>
     </form>
-    <a href="signup.html" class="back-link">Don't have an account? Sign up</a>
+    <a href="{{ url_for('signup') }}" class="back-link">Don't have an account? Sign up</a>
   </div>
 
   <script src="login.js"></script>
