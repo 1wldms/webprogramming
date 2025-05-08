@@ -11,6 +11,19 @@ def index():
         isLogin = True
     return render_template('mainpage.html', isLogin = isLogin) 
 
+DB_user = 'user&pwd.db'
+def init_db():
+    if not os.path.exists(DB_user):
+        conn = sqlite3.connect('test.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+                    CREATE TABLE users(
+                        username TEXT PRIMARY KEY,
+                        password TEXT NOT NULL
+                    )
+                    ''')
+        conn.commit()
+        conn.close()
 
 users = {}
 
@@ -21,7 +34,7 @@ def signup():
         password = request.form['pwd']
         
         
-        conn = sqlite3.connect('test.db')
+        conn = sqlite3.connect(DB_user)
         cursor = conn.cursor()
         q = "INSERT INTO users (username,password) VALUES ?;"
         cursor.execute(q,(username,))
@@ -49,7 +62,7 @@ def login():
         password = request.form['pwd']
         
         
-        with sqlite3.connect('test.db') as conn:
+        with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             q = "SELECT password FROM users WHERE username = ?;"
             cursor.execute(q, (username, password))
