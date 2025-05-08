@@ -30,7 +30,7 @@ def index():
 
 
 @app.route('/signup', methods = ['GET','POST'])
-def signup():
+def signup():  # sourcery skip: use-named-expression
     if request.method == "POST":
         username = request.form['username']
         password = request.form['pwd']
