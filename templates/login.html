@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Style-It | Log In</title>
-  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
 </head>
 
 <body>
@@ -12,12 +12,12 @@
     <h2>Style-It | Log In</h2>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
+        <script>
+          {% for message in messages %}
+            alert("{{ message }}");
+          {% endfor %}
+        </script>
+        {% endif %}
     {% endwith %}
 
     <form id="login-form" action="/login" method="POST">
@@ -37,6 +37,6 @@
     <a href="{{ url_for('signup') }}" class="back-link">Don't have an account? Sign up</a>
   </div>
 
-  <script src="login.js"></script>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 </html>

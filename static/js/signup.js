@@ -5,26 +5,24 @@ function togglePassword() {
 
 const username = document.getElementById("username");
 const password = document.getElementById("password");
-const button = document.getElementById("login-btn");
-const form = document.getElementById("login-form");
+const genderRadios = document.querySelectorAll('input[name="gender"]');
+const button = document.getElementById("submit-btn");
+const form = document.getElementById("signup-form");
 
 function checkInputs() {
     const usernameFilled = username.value.trim() !== "";
     const passwordFilled = password.value.trim() !== "";
+    const genderSelected = Array.from(genderRadios).some(r => r.checked);
 
-    if (usernameFilled && passwordFilled) {
-        button.disabled = false;
-        button.classList.add("active");
+    if (usernameFilled && passwordFilled && genderSelected) {
+    button.disabled = false;
+    button.classList.add("active");
     } else {
-        button.disabled = true;
-        button.classList.remove("active");
+    button.disabled = true;
+    button.classList.remove("active");
     }
 }
 
 username.addEventListener("input", checkInputs);
 password.addEventListener("input", checkInputs);
-
-form.addEventListener("submit", function (e) {
-    //e.preventDefault(); // prevent actual submission
-    //alert("Logged in successfully! 🔐");
-});
+genderRadios.forEach(radio => radio.addEventListener("change", checkInputs));
