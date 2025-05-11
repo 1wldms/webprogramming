@@ -4,13 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Style-It | My Page</title>
-    <link rel="stylesheet" href="mypage.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mypage.css') }}">
 </head>
 <body>
+    <div class="box"> 
+        <h1>Welcome, {{ username }}!</h1>
+        <p><strong>Gender:</strong> {{ gender }}</p>
 
-    <h1>안녕하세요!</h1>
-    <p>이것은 HTML 기본 구조입니다.</p>
+        <div class="password-section">
+            <label for="pw">Password:</label>
+            <input type="password" id="pw" value="{{ password }}" readonly>
+            <button onclick="togglePW()">👁</button> 
+        </div>
 
-    <!-- <script src="script.js"></script> 필요시 JS 연결 -->
+        <h2> Liked Outfits</h2>
+        <div class="likes">
+            {% for img in likes %}      
+                <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="liked outfit" class="liked-img">
+            {% else %}
+                <p>No liked outfits yet!</p>
+            {% endfor %}
+        </div>
+
+        <div class="btn-group">
+            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+            <a href="{{ url_for('delete_account') }}" class="btn danger">Delete Account</a>
+        </div>
+    </div>
+
+    <script> 
+        function togglePW() {
+            const pw = document.getElementById("pw");
+            pw.type = pw.type === "password" ? "text" : "password";
+        }
+    </script>
 </body>
 </html>
