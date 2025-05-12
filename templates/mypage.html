@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Style-It | My Page</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='mypage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
 </head>
 <body>
     <div class="box"> 
@@ -12,11 +12,13 @@
         <p><strong>Gender:</strong> {{ gender }}</p>
 
         <div class="password-section">
-            <label for="pw">Password:</label>
+            <label for="pw"><strong>Password:</strong></label>
             <input type="password" id="pw" value="{{ password }}" readonly>
             <button onclick="togglePW()">👁</button> 
         </div>
 
+        <br><br>
+        
         <h2> Liked Outfits</h2>
         <div class="likes">
             {% for img in likes %}      
@@ -28,7 +30,7 @@
 
         <div class="btn-group">
             <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-            <a href="{{ url_for('delete_account') }}" class="btn danger">Delete Account</a>
+            {# <a href="{{ url_for('delete_account') }}" class="btn danger">Delete Account</a> #}
         </div>
     </div>
 

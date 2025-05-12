@@ -19,7 +19,16 @@ def init_db():
                     username TEXT PRIMARY KEY,
                     password TEXT NOT NULL,
                     gender TEXT NOT NULL
-                )
+                );
+                ''')
+    
+    cursor.execute('''
+                CREATE TABLE likes(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL,
+                    img TEXT NOT NULL,
+                    FOREIGN KEY(username) REFERENCES users(username)
+                );
                 ''')
     conn.commit()
     conn.close()
@@ -71,18 +80,50 @@ def login():
             if user and user[0] == password:
                 session['username'] = username
                 flash(f"{username}! Welcome to Style-It 🎉")
-                return redirect(url_for('index'))
+                return redirect(url_for('mypage'))
             else:
                 flash("Please check your username of password again.")
                 return redirect(url_for('login'))
 
     return render_template('login.html')
 
+@app.route('/mypage')
+def mypage():
+    if 'username' not in session:
+        flash('Please login.')
+        return redirect(url_for('login'))
+    
+    username = session['username']
+    
+    with sqlite3.connect(DB_user) as conn:
+        cursor = conn.cursor()
+        
+        q = "SELECT password, gender FROM users WHERE username = ?;"
+        cursor.execute(q, (username,))
+        user = cursor.fetchone()
+        
+        if not user:
+            flash('Cannot find user info.')
+            return redirect(url_for('signup'))
+        
+        password, gender = user
+        
+        p = "SELECT img FROM likes WHERE username = ? ORDER BY id DESC;"
+        cursor.execute(p, (username,))
+        likes = [row[0] for row in cursor.fetchall()]
+        
+    return render_template(
+        "mypage.html",
+        username = username,
+        password = password,
+        gender = gender,
+        likes = likes,
+    )
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True, port = 8080)
