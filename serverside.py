@@ -127,3 +127,16 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True, port = 8080)
+
+
+# Flask 연결 예시 (serverside.py) -> from weather_style.html
+@app.route('/weather-style', methods=["GET"])
+def weather_style():
+    return render_template("weather_style.html")
+
+@app.route('/result', methods=["POST"])
+def result():
+    city = request.form["city"]
+    style = request.form["style"]
+    # 여기에 날씨 API + 추천 로직 넣기
+    return render_template("result.html", city=city, style=style)

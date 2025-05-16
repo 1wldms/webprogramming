@@ -1,16 +1,56 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문서 제목</title>
-    <!-- <link rel="stylesheet" href="style.css"> 필요시 CSS 연결 -->
+    <title> Style-It | Weather and Style! </title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
 </head>
 <body>
+  <div class="weather-style-box">
+    <h2>We’ll recommend an outfit based on the weather and your style!</h2>
+    <p>Please select your <strong>location</strong>and <strong>style</strong>below<br>
+    We’ll show you outfit suggestions based on live weather and your selected preferences.</p>
 
-    <h1>안녕하세요!</h1>
-    <p>이것은 HTML 기본 구조입니다.</p>
+    <form action="{{ url_for('result') }}" method="POST" class="style-form">
+      <!-- 지역 선택 -->
+      <div class="form-group">
+        <label for="city">Select a city:</label>
+        <select id="city" name="city" required>
+          <option value="" disabled selected>-- Choose a city --</option>
+          <option value="Seoul">Seoul</option>
+          <option value="Tokyo">Tokyo</option>
+          <option value="Shanghai">Shanghai</option>
+          <option value="Manila">Manila</option>
+          <option value="Los Angeles">Los Angeles</option>
+          <option value="Bangkok">Bangkok</option>
+          <option value="New York">New York</option>
+          <option value="London">London</option>
+          <option value="Sydney">Sydney</option>
+          <option value="Vancouver">Vancouver</option>
+          <option value="Paris">Paris</option>
+          <option value="Berlin">Berlin</option>
+          <option value="Dubai">Dubai</option>
+          <option value="Singapore">Singapore</option>
+          <option value="Brasilia">Brazilia</option>
+          <option value="Brasilia">Cairo</option>
+          <option value="Brasilia">Sāo Paulo</option>
+          <option value="Brasilia">Delhi</option>
+        </select>
+      </div>
 
-    <!-- <script src="script.js"></script> 필요시 JS 연결 -->
+      <!-- 스타일 선택 -->
+      <div class="form-group">
+        <label>스타일을 선택하세요:</label><br>
+        <label><input type="radio" name="style" value="Casual" required> Casual </label><br>
+        <label><input type="radio" name="style" value="Minimal"> Minimal </label><br>
+        <label><input type="radio" name="style" value="Street"> Street </label><br>
+        <label><input type="radio" name="style" value="Chic"> Chic </label><br>
+        <label><input type="radio" name="style" value="Vintage"> Vintage </label><br>
+        <label><input type="radio" name="style" value="Feminine"> Feminine </label>
+      </div>
+
+      <!-- 제출 버튼 -->
+      <button type="submit" class="btn"> See Results! </button>
+    </form>
+  </div>
 </body>
 </html>
