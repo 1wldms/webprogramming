@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
+import requests
+import json
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -48,7 +50,6 @@ def signup():
         password = request.form['pwd']
         gender = request.form['gender']
         
-        
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             q = "SELECT * FROM users WHERE username = ?"
@@ -79,8 +80,7 @@ def login():
         
             if user and user[0] == password:
                 session['username'] = username
-                flash(f"{username}! Welcome to Style-It 🎉")
-                return redirect(url_for('mypage'))
+                return redirect(url_for('weather_style'))
             else:
                 flash("Please check your username of password again.")
                 return redirect(url_for('login'))
@@ -120,17 +120,7 @@ def mypage():
         likes = likes,
     )
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-if __name__ == "__main__":
-    app.run(debug=True, port = 8080)
-
-
-# Flask 연결 예시 (serverside.py) -> from weather_style.html
-@app.route('/weather-style', methods=["GET"])
+@app.route('/Style-It', methods=["GET"])
 def weather_style():
     return render_template("weather_style.html")
 
@@ -138,5 +128,45 @@ def weather_style():
 def result():
     city = request.form["city"]
     style = request.form["style"]
+    
+    # 날씨 API 설정
+    apiKey = "발급받은Key" # 웹 사이트에 weather api, free for student 요청한 상태 
+    lang = 'eng'
+    units = 'metric'
+    api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={apiKey}&lang={lang}&units={units}"
+
+    try:
+        response = requests.get(api)
+        weather_data = response.json()
+
+        if response.status_code == 200:
+            temp = weather_data['main']['temp']
+            humidity = weather_data['main']['humidity']
+            wind_speed = weather_data['wind']['speed']
+            description = weather_data['weather'][0]['description']
+        else:
+            temp = humidity = wind_speed = description = "NO DATA"
+
+    except Exception as e:
+        print(f"Error fetching weather data: {e}")
+        temp = humidity = wind_speed = description = "ERROR"
+
+    return render_template("result.html",
+                            city=city,
+                            style=style,
+                            temp=temp,
+                            humidity=humidity,
+                            wind_speed=wind_speed,
+                            description=description)
+    
     # 여기에 날씨 API + 추천 로직 넣기
     return render_template("result.html", city=city, style=style)
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+if __name__ == "__main__":
+    app.run(debug=True, port = 8080)
