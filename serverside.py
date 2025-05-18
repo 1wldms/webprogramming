@@ -139,7 +139,6 @@ def result():
         response = requests.get(api)
         weather_data = response.json()
         
-        print(weather_data)
 
         if response.status_code == 200:
             temp = weather_data['main']['temp']
@@ -179,11 +178,11 @@ def result():
 
 
         else:
-            temp = humidity = wind_speed = description = "NO DATA"
+            temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "NO DATA"
 
     except Exception as e:
         print(f"Error fetching weather data: {e}")
-        temp = humidity = wind_speed = description = "ERROR"
+        temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "ERROR"
 
     return render_template("result.html",
                             city=city,
@@ -196,9 +195,6 @@ def result():
                             humidity=humidity,
                             wind_status=wind_status,
                             description=description)
-    
-    # 추천 로직 넣기
-    return render_template("result.html", city=city, style=style)
 
 
 @app.route('/logout')
