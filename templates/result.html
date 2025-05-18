@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문서 제목</title>
+    <title>Weather & Style Result </title>
     <!-- <link rel="stylesheet" href="style.css"> 필요시 CSS 연결 -->
 </head>
 <body>
 
-    <h1>안녕하세요!</h1>
-    <p>이것은 HTML 기본 구조입니다.</p>
+    <h1>Weather and Style Recommendation</h1>
+    
+    <h2>City: {{ city }}</h2>
+    <p><strong>Style:</strong> {{ style }}</p>
+
+    <h3>Current weather<h3>
+    <ul>
+        <li><strong>Temperature:</strong> {{ temp }}°C</li>
+        <li><strong>Feels Like:</strong> {{ feels_like }}°C</li>
+        <li><strong>Temp Max:</strong> {{ temp_max }}°C</li>
+        <li><strong>Temp Min:</strong> {{ temp_min }}°C</li>
+        <li><strong>Humidity:</strong> {{ humidity }}%</li>
+        <li><strong>Cloud:</strong> {{ cloud_status }}</li>
+        <li><strong>Condition:</strong> {{ description }}</li>
+        <li><strong>Wind Speed:</strong> {{ wind_status }}</li>
+    </ul>
+
+
+    <h3>Recommended Outfit</h3>
+
+    <a href="{{ url_for('weather_style') }}">🔙 Back</a>
 
     <!-- <script src="script.js"></script> 필요시 JS 연결 -->
 </body>

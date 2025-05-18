@@ -130,7 +130,7 @@ def result():
     style = request.form["style"]
     
     # 날씨 API 설정
-    apiKey = "발급받은Key" # 웹 사이트에 weather api, free for student 요청한 상태 
+    apiKey = "43b898019498441e6f6dfae065f1af73"
     lang = 'eng'
     units = 'metric'
     api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={apiKey}&lang={lang}&units={units}"
@@ -138,12 +138,46 @@ def result():
     try:
         response = requests.get(api)
         weather_data = response.json()
+        
+        print(weather_data)
 
         if response.status_code == 200:
             temp = weather_data['main']['temp']
+            feels_like = weather_data['main']['feels_like']
+            temp_max = weather_data['main']['temp_min']
+            temp_min = weather_data['main']['temp_max']
+            clouds  = weather_data['clouds']['all']
             humidity = weather_data['main']['humidity']
             wind_speed = weather_data['wind']['speed']
             description = weather_data['weather'][0]['description']
+            
+            if clouds == 0:
+                cloud_status = "Clear sky - Blue sky with no clouds at all"
+            elif clouds <= 25:
+                cloud_status = "Mostly clear - Mostly sunny with a few clouds"
+            elif clouds <= 50:
+                cloud_status = "Partly cloudy - About half sky covered with clouds"
+            elif clouds <= 84:
+                cloud_status = "Mostly cloudy - Sky is mostly covered by clouds"
+            else:
+                cloud_status = "Overcast - Completely covered with thick clouds"
+            
+            if wind_speed < 0.3:
+                wind_status = "Calm - Very light air, hardly noticeable"
+            elif wind_speed < 1.6:
+                wind_status = "Light air - Feels like still air, leaves unmoving"
+            elif wind_speed < 3.4:
+                wind_status = "Light breeze - Leaves rustle, wind can be felt on face"
+            elif wind_speed < 5.5:
+                wind_status = "Gentle breeze - Leaves and small twigs in constant motion"
+            elif wind_speed < 8.0:
+                wind_status = "Moderate breeze - Moves small branches, raises loose paper"
+            elif wind_speed < 10.8:
+                wind_status = "Fresh breeze - Small trees sway, wind felt strongly"
+            else:
+                wind_status = "Strong wind - Trees move noticeably, walking against wind is difficult"
+
+
         else:
             temp = humidity = wind_speed = description = "NO DATA"
 
@@ -155,11 +189,15 @@ def result():
                             city=city,
                             style=style,
                             temp=temp,
+                            feels_like=feels_like,
+                            temp_max=temp_max,
+                            temp_min=temp_min,
+                            cloud_status=cloud_status,
                             humidity=humidity,
-                            wind_speed=wind_speed,
+                            wind_status=wind_status,
                             description=description)
     
-    # 여기에 날씨 API + 추천 로직 넣기
+    # 추천 로직 넣기
     return render_template("result.html", city=city, style=style)
 
 
