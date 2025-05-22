@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather & Style Result </title>
-    <!-- <link rel="stylesheet" href="style.css"> 필요시 CSS 연결 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather & Style Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
 </head>
 <body>
+
+    <!-- 오른쪽 상단 mypage 박스 -->
+    <div class="top-nav">
+        <a href="{{ url_for('mypage') }}">My Page</a>
+    </div>
 
     <h1>Weather and Style Recommendation</h1>
     
     <h2>City: {{ city }}</h2>
     <p><strong>Style:</strong> {{ style }}</p>
 
-    <h3>Current weather<h3>
+    <h3>Current weather</h3>
     <ul>
         <li><strong>Temperature:</strong> {{ temp }}°C</li>
         <li><strong>Feels Like:</strong> {{ feels_like }}°C</li>
@@ -25,11 +30,9 @@
         <li><strong>Wind Speed:</strong> {{ wind_status }}</li>
     </ul>
 
-
     <h3>Recommended Outfit</h3>
 
     <a href="{{ url_for('weather_style') }}">🔙 Back</a>
 
-    <!-- <script src="script.js"></script> 필요시 JS 연결 -->
 </body>
 </html>

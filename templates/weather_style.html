@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <title> Style-It | Weather and Style! </title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/weather_style.css') }}">
 </head>
 <body>
+  <!-- 오른쪽 상단 마이페이지 박스 -->
+  <div class="top-nav">
+    <a href="{{ url_for('mypage') }}">My Page</a>
+  </div>
+
   <div class="weather-style-box">
     <h2>We’ll recommend an outfit based on the weather and your style!</h2>
     <p>Please select your <strong>location</strong> and <strong>style</strong> below<br>
