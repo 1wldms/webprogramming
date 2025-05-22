@@ -3,10 +3,13 @@ import sqlite3
 import os
 import requests
 import json
+from openai import OpenAI
+import traceback
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 
+client = OpenAI(api_key="")
 
 DB_user = 'user_info.db'
 
@@ -124,10 +127,18 @@ def mypage():
 def weather_style():
     return render_template("weather_style.html")
 
-@app.route('/result', methods=["POST"])
+@app.route('/result', methods=["GET","POST"])
 def result():
     city = request.form["city"]
     style = request.form["style"]
+    
+    username = session.get('username')
+    with sqlite3.connect(DB_user) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT gender FROM users WHERE username = ?;", (username,))
+        result = cursor.fetchone()
+        gender = result[0] if result else "unspecified"
+    
     
     # 날씨 API 설정
     apiKey = "43b898019498441e6f6dfae065f1af73"
@@ -183,6 +194,27 @@ def result():
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "ERROR"
+    
+    
+    try:
+        prompt = f"I am {gender}. I live in {city} and would like to wear clothes in a {style} style. Could you please suggest an outfit and recommendations that would suit me?"
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=300,
+            temperature=0.7,
+        )
+
+        gpt_reply = response.choices[0].message.content
+        
+    except Exception as e:
+        traceback.print_exc()  # 전체 에러 로그 보기
+        print(f"Error fetching GPT response: {e}")
+        gpt_reply = f"GPT ERROR: {str(e)}"
+        
 
     return render_template("result.html",
                             city=city,
@@ -194,7 +226,8 @@ def result():
                             cloud_status=cloud_status,
                             humidity=humidity,
                             wind_status=wind_status,
-                            description=description)
+                            description=description,
+                            gpt_reply=gpt_reply)
 
 
 @app.route('/logout')
