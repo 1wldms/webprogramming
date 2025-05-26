@@ -6,7 +6,7 @@ import json
 import openai
 import traceback
 from dotenv import load_dotenv
-import os
+import re
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -154,7 +154,6 @@ def result():
     try:
         response = requests.get(api)
         weather_data = response.json()
-        
 
         if response.status_code == 200:
             temp = weather_data['main']['temp']
@@ -192,20 +191,56 @@ def result():
             else:
                 wind_status = "Strong wind - Trees move noticeably, walking against wind is difficult"
 
+        weather_info = f"""Today's weather in {city}:
+    - Temperature: {temp}°C (feels like {feels_like}°C)
+    - High: {temp_max}°C, Low: {temp_min}°C
+    - Condition: {description}
+    - Cloudiness: {cloud_status}
+    - Wind: {wind_status}
+    - Humidity: {humidity}%"""
 
-        else:
-            temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "NO DATA"
+        special_notes = []
+
+        weather_main = weather_data['weather'][0]['main'].lower()
+        if 'rain' in weather_main or 'rain' in weather_data or 'snow' in weather_main or 'snow' in weather_data:
+            special_notes.append("⚠️ It is raining or snowing. Consider waterproof clothing, non-slip shoes, or carrying an umbrella.")
+
+        if isinstance(wind_speed, (int, float)) and wind_speed >= 5.5:
+            special_notes.append("💨 It is windy. Be careful with lightweight accessories like hats or umbrellas.")
+
+        if isinstance(humidity, (int, float)) and humidity >= 80:
+            special_notes.append("💧 The humidity is high. Wear breathable and quick-drying clothes to stay comfortable.")
+
+
+        if special_notes:
+            weather_info += "\n\nWeather Advisory:\n" + "\n".join(special_notes)
 
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "ERROR"
     
     
+    #gpt prompt 보내기
     try:
-        prompt = f"I am {gender}. I live in {city} and would like to wear clothes in a {style} style. Could you please suggest an outfit and recommendations that would suit me?"
+
+        prompt = f"""You are a fashion coordinator who understands Korean weather very well.
+    {weather_info}
+    I am a {gender} living in {city}, and I prefer a {style} style.
+
+    Based on today's weather conditions, recommend an outfit that is stylish and practical.
+    Please respond in the following format (no markdown, no bold):
+
+    - Outerwear: ...
+    - Top: ...
+    - Bottom: ...
+    - Shoes: ...
+    - Accessories: ...
+    - Additional Consideration: ...
+
+    Be concise and avoid long paragraphs. Keep each item to 1–2 sentences explaining why it's suitable."""
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "user", "content": prompt}
             ],
@@ -219,11 +254,51 @@ def result():
         traceback.print_exc()  # 전체 에러 로그 보기
         print(f"Error fetching GPT response: {e}")
         gpt_reply = f"GPT ERROR: {str(e)}"
-        
+
+    
+    def reply_from_gpt(reply):
+        outfit = {}
+        lines = reply.split("- ")
+        for line in lines:
+            if ":" in line:
+                key, value = line.split(":", 1)
+                key_clean = re.sub(r"\*\*", "", key.strip())  # ** 제거
+                value_clean = re.sub(r"\*\*", "", value.strip())  # ** 제거
+                outfit[key_clean] = value_clean
+        return outfit
+
+    emoji_map = {
+        "Outerwear": "🧥",
+        "Top": "👕",
+        "Bottom": "👖",
+        "Shoes": "👟",
+        "Accessories": "👜",
+        "Additional Consideration": "💡"
+    }
+
+    outfit_dict = reply_from_gpt(gpt_reply)
+    
+    
+    style_emoji_map = {
+    "casual": "👖",       
+    "minimal": "👕",     
+    "street": "👟",       
+    "chic": "🕶️",        
+    "girlish": "👗",     
+    "vintage": "🧥",      
+    "formal": "👔",      
+    "classic": "🧑‍💼",    
+    "sporty": "🎽"        
+    }
+
+
+    style_icon = style_emoji_map.get(style.lower(), "🧍")
+
 
     return render_template("result.html",
                             city=city,
                             style=style,
+                            style_icon=style_icon,
                             temp=temp,
                             feels_like=feels_like,
                             temp_max=temp_max,
@@ -232,7 +307,9 @@ def result():
                             humidity=humidity,
                             wind_status=wind_status,
                             description=description,
-                            gpt_reply=gpt_reply)
+                            gpt_reply=gpt_reply,
+                            outfit=outfit_dict,
+                            emoji=emoji_map)
 
 
 @app.route('/logout')

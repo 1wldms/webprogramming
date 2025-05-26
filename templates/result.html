@@ -29,9 +29,21 @@
         <li><strong>Wind Speed:</strong> {{ wind_status }}</li>
     </ul>
 
-    <h3>Recommended Outfit</h3>
-    <p>{{ gpt_reply }}</p>
-
+    <h3>{{ style_icon }} Outfit Recommendation</h3>
+    <table style="border-collapse: collapse; width: 100%; margin-top: 15px;">
+        <tbody>
+            {% for key, value in outfit.items() %}
+                <tr style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                    <td style="padding: 8px 12px; font-weight: bold; white-space: nowrap;">
+                        {{ emoji.get(key, '') }} {{ key }}
+                    </td>
+                    <td style="padding: 8px 12px;">{{ value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <br>
     <a href="{{ url_for('weather_style') }}">🔙 Back</a>
 
 </body>
