@@ -3,13 +3,19 @@ import sqlite3
 import os
 import requests
 import json
-from openai import OpenAI
+import openai
 import traceback
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 
-client = OpenAI(api_key="")
+load_dotenv()
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+weather_api_key = os.getenv("WEATHER_API_KEY")
+
 
 DB_user = 'user_info.db'
 
@@ -141,10 +147,9 @@ def result():
     
     
     # 날씨 API 설정
-    apiKey = "43b898019498441e6f6dfae065f1af73"
     lang = 'eng'
     units = 'metric'
-    api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={apiKey}&lang={lang}&units={units}"
+    api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={weather_api_key}&lang={lang}&units={units}"
 
     try:
         response = requests.get(api)
@@ -154,8 +159,8 @@ def result():
         if response.status_code == 200:
             temp = weather_data['main']['temp']
             feels_like = weather_data['main']['feels_like']
-            temp_max = weather_data['main']['temp_min']
-            temp_min = weather_data['main']['temp_max']
+            temp_max = weather_data['main']['temp_max']
+            temp_min = weather_data['main']['temp_min']
             clouds  = weather_data['clouds']['all']
             humidity = weather_data['main']['humidity']
             wind_speed = weather_data['wind']['speed']
@@ -199,7 +204,7 @@ def result():
     try:
         prompt = f"I am {gender}. I live in {city} and would like to wear clothes in a {style} style. Could you please suggest an outfit and recommendations that would suit me?"
 
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "user", "content": prompt}
@@ -208,7 +213,7 @@ def result():
             temperature=0.7,
         )
 
-        gpt_reply = response.choices[0].message.content
+        gpt_reply = response["choices"][0]["message"]["content"]
         
     except Exception as e:
         traceback.print_exc()  # 전체 에러 로그 보기
