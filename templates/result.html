@@ -12,22 +12,24 @@
         <a href="{{ url_for('mypage') }}">My Page</a>
     </div>
 
-    <h1>Weather and Style Recommendation</h1>
+    <h1>🌤 Weather and Style Recommendation</h1>
     
-    <h2>City: {{ city }}</h2>
-    <p><strong>Style:</strong> {{ style }}</p>
+    <div class="section">
+        <p><strong>City:</strong> {{ city }}</p>
+        <p><strong>Style:</strong> {{ style_icon }} {{ style }}</p>
+    </div>
 
-    <h3>Current weather</h3>
-    <ul>
-        <li><strong>Temperature:</strong> {{ temp }}°C</li>
-        <li><strong>Feels Like:</strong> {{ feels_like }}°C</li>
-        <li><strong>Temp Max:</strong> {{ temp_max }}°C</li>
-        <li><strong>Temp Min:</strong> {{ temp_min }}°C</li>
-        <li><strong>Humidity:</strong> {{ humidity }}%</li>
-        <li><strong>Cloud:</strong> {{ cloud_status }}</li>
-        <li><strong>Condition:</strong> {{ description }}</li>
-        <li><strong>Wind Speed:</strong> {{ wind_status }}</li>
-    </ul>
+    <div class="section">
+        <h2>📊 Current Weather</h2>
+        <ul>
+            <li>🌡 Temperature: {{ temp }}°C (Feels Like: {{ feels_like }}°C)</li>
+            <li>📈 Max: {{ temp_max }}°C / 📉 Min: {{ temp_min }}°C</li>
+            <li>☁️ Cloud: {{ cloud_status }}</li>
+            <li>💨 Wind: {{ wind_status }}</li>
+            <li>💧 Humidity: {{ humidity }}%</li>
+            <li>📝 Condition: {{ description }}</li>
+        </ul>
+    </div>
 
     <h3>{{ style_icon }} Outfit Recommendation</h3>
     <table style="border-collapse: collapse; width: 100%; margin-top: 15px;">
@@ -42,8 +44,33 @@
             {% endfor %}
         </tbody>
     </table>
-    
-    <br>
+
+    <h3>📸 Outfit Image Suggestions</h3>
+
+    <p>We searched Pinterest using the keyword: <strong>"{{ search_query }}"</strong></p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+        {% if image_urls %}
+            {% for url in image_urls %}
+                <div style="width: 200px;">
+                    <img src="{{ url }}" alt="Outfit image" style="width: 100%; border-radius: 10px;" />
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No images found for this style.</p>
+        {% endif %}
+    </div>
+
+    <!-- Pinterest 버튼 추가 -->
+    <div style="margin-top: 30px;">
+        <h3>Looking for more in Pinterest?</h3>
+        <a href="{{ search_url }}" target="_blank">
+            <button style="padding: 10px 16px; font-size: 16px; background-color: #E60023; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                🔍 View "{{ style }}" style on Pinterest
+            </button>
+        </a>
+    </div>
+
     <a href="{{ url_for('weather_style') }}">🔙 Back</a>
 
 </body>

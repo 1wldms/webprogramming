@@ -14,8 +14,9 @@ app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 load_dotenv()
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 weather_api_key = os.getenv("WEATHER_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+CX = os.getenv("CX_ID")
 
 
 DB_user = 'user_info.db'
@@ -46,6 +47,117 @@ def init_db():
     conn.close()
 
 init_db()
+
+
+def get_weather_info(city):
+    lang = 'eng'
+    units = 'metric'
+    api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={weather_api_key}&lang={lang}&units={units}"
+    
+    try:
+        response = requests.get(api)
+        weather_data = response.json()
+        if response.status_code != 200:
+            return None
+        return weather_data
+    except:
+        return None
+    
+
+def parse_weather(weather_data, city):
+    temp = weather_data['main']['temp']
+    feels_like = weather_data['main']['feels_like']
+    temp_max = weather_data['main']['temp_max']
+    temp_min = weather_data['main']['temp_min']
+    clouds  = weather_data['clouds']['all']
+    humidity = weather_data['main']['humidity']
+    wind_speed = weather_data['wind']['speed']
+    description = weather_data['weather'][0]['description']
+
+    cloud_status = ("Clear sky - Blue sky with no clouds at all" if clouds == 0 else
+                    "Mostly clear - Mostly sunny with a few clouds" if clouds <= 25 else
+                    "Partly cloudy - About half sky covered with clouds" if clouds <= 50 else
+                    "Mostly cloudy - Sky is mostly covered by clouds" if clouds <= 84 else
+                    "Overcast - Completely covered with thick clouds")
+
+    wind_status = ("Calm - Very light air, hardly noticeable" if wind_speed < 0.3 else
+                    "Light air - Feels like still air, leaves unmoving" if wind_speed < 1.6 else
+                    "Light breeze - Leaves rustle, wind can be felt on face" if wind_speed < 3.4 else
+                    "Gentle breeze - Leaves and small twigs in constant motion" if wind_speed < 5.5 else
+                    "Moderate breeze - Moves small branches, raises loose paper" if wind_speed < 8.0 else
+                    "Fresh breeze - Small trees sway, wind felt strongly" if wind_speed < 10.8 else
+                    "Strong wind - Trees move noticeably, walking against wind is difficult")
+
+    weather_info = f"""Today's weather in {city}:
+- Temperature: {temp}°C (feels like {feels_like}°C)
+- High: {temp_max}°C, Low: {temp_min}°C
+- Condition: {description}
+- Cloudiness: {cloud_status}
+- Wind: {wind_status}
+- Humidity: {humidity}%"""
+
+    notes = []
+    main = weather_data['weather'][0]['main'].lower()
+    if 'rain' in main or 'snow' in main:
+        notes.append("⚠️ It is raining or snowing. Consider waterproof clothing.")
+    if wind_speed >= 5.5:
+        notes.append("💨 It is windy. Avoid lightweight accessories.")
+    if humidity >= 80:
+        notes.append("💧 High humidity. Wear breathable clothing.")
+
+    if notes:
+        weather_info += "\n\nWeather Advisory:\n" + "\n".join(notes)
+
+    return weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description
+
+def get_pinterest_images(query, google_api_key, cx_id):
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "q": query,
+        "cx": cx_id,
+        "key": google_api_key,
+        "searchType": "image",
+        "num": 5,
+        "safe": "active"
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+        return [item["link"] for item in data.get("items", [])]
+    except:
+        return []
+
+def reply_from_gpt(reply):
+    outfit = {}
+    lines = reply.split("- ")
+    for line in lines:
+        if ":" in line:
+            key, value = line.split(":", 1)
+            key_clean = re.sub(r"\*\*", "", key.strip())
+            value_clean = re.sub(r"\*\*", "", value.strip())
+            outfit[key_clean] = value_clean
+    return outfit
+
+def build_search_query(outfit_dict, gender, style):
+    outer = outfit_dict.get("Outerwear", "").lower()
+    top = outfit_dict.get("Top", "").lower()
+    bottom = outfit_dict.get("Bottom", "").lower()
+
+    keywords = []
+    if outer:
+        keywords.append(outer)
+    if bottom:
+        keywords.append(bottom)
+    if top:
+        keywords.append(top)
+    selected = keywords[:2]  # 최대 2개
+
+    selected.insert(0, gender)
+    selected.append(f"{style} outfit")
+
+    return " ".join(selected)
+
 
 @app.route('/')
 def index():
@@ -134,6 +246,7 @@ def mypage():
 def weather_style():
     return render_template("weather_style.html")
 
+
 @app.route('/result', methods=["GET","POST"])
 def result():
     city = request.form["city"]
@@ -146,86 +259,17 @@ def result():
         result = cursor.fetchone()
         gender = result[0] if result else "unspecified"
     
-    
-    # 날씨 API 설정
-    lang = 'eng'
-    units = 'metric'
-    api = f"https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={weather_api_key}&lang={lang}&units={units}"
+    weather_data = get_weather_info(city)
+    if not weather_data:
+        flash("Failed to fetch weather data.")
+        return redirect(url_for('weather_style'))
 
-    try:
-        response = requests.get(api)
-        weather_data = response.json()
-
-        if response.status_code == 200:
-            temp = weather_data['main']['temp']
-            feels_like = weather_data['main']['feels_like']
-            temp_max = weather_data['main']['temp_max']
-            temp_min = weather_data['main']['temp_min']
-            clouds  = weather_data['clouds']['all']
-            humidity = weather_data['main']['humidity']
-            wind_speed = weather_data['wind']['speed']
-            description = weather_data['weather'][0]['description']
-            
-            if clouds == 0:
-                cloud_status = "Clear sky - Blue sky with no clouds at all"
-            elif clouds <= 25:
-                cloud_status = "Mostly clear - Mostly sunny with a few clouds"
-            elif clouds <= 50:
-                cloud_status = "Partly cloudy - About half sky covered with clouds"
-            elif clouds <= 84:
-                cloud_status = "Mostly cloudy - Sky is mostly covered by clouds"
-            else:
-                cloud_status = "Overcast - Completely covered with thick clouds"
-            
-            if wind_speed < 0.3:
-                wind_status = "Calm - Very light air, hardly noticeable"
-            elif wind_speed < 1.6:
-                wind_status = "Light air - Feels like still air, leaves unmoving"
-            elif wind_speed < 3.4:
-                wind_status = "Light breeze - Leaves rustle, wind can be felt on face"
-            elif wind_speed < 5.5:
-                wind_status = "Gentle breeze - Leaves and small twigs in constant motion"
-            elif wind_speed < 8.0:
-                wind_status = "Moderate breeze - Moves small branches, raises loose paper"
-            elif wind_speed < 10.8:
-                wind_status = "Fresh breeze - Small trees sway, wind felt strongly"
-            else:
-                wind_status = "Strong wind - Trees move noticeably, walking against wind is difficult"
-
-        weather_info = f"""Today's weather in {city}:
-    - Temperature: {temp}°C (feels like {feels_like}°C)
-    - High: {temp_max}°C, Low: {temp_min}°C
-    - Condition: {description}
-    - Cloudiness: {cloud_status}
-    - Wind: {wind_status}
-    - Humidity: {humidity}%"""
-
-        special_notes = []
-
-        weather_main = weather_data['weather'][0]['main'].lower()
-        
-        if 'rain' in weather_main or 'rain' in weather_data or 'snow' in weather_main or 'snow' in weather_data:
-            special_notes.append("⚠️ It is raining or snowing. Consider waterproof clothing, non-slip shoes, or carrying an umbrella.")
-
-        if isinstance(wind_speed, (int, float)) and wind_speed >= 5.5:
-            special_notes.append("💨 It is windy. Be careful with lightweight accessories like hats or umbrellas.")
-
-        if isinstance(humidity, (int, float)) and humidity >= 80:
-            special_notes.append("💧 The humidity is high. Wear breathable and quick-drying clothes to stay comfortable.")
-
-
-        if special_notes:
-            weather_info += "\n\nWeather Advisory:\n" + "\n".join(special_notes)
-
-    except Exception as e:
-        print(f"Error fetching weather data: {e}")
-        temp = feels_like = temp_max = temp_min = cloud_status = humidity = wind_status = description = "ERROR"
-    
+    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description = parse_weather(weather_data, city)
     
     #gpt prompt 보내기
     try:
 
-        prompt = f"""You are a fashion coordinator who understands Korean weather very well.
+        prompt = f"""You are a fashion coordinator who understands weather very well.
     {weather_info}
     I am a {gender} living in {city}, and I prefer a {style} style.
 
@@ -238,8 +282,17 @@ def result():
     - Shoes: ...
     - Accessories: ...
     - Additional Consideration: ...
-
-    Be concise and avoid long paragraphs. Keep each item to 1–2 sentences explaining why it's suitable."""
+    
+    
+    ⚠️ Important: For each clothing item (Outerwear, Top, Bottom, etc.), respond with a **short, keyword-style description** that can be used as a Pinterest search term. Avoid long sentences or explanations. For example:
+    - Outerwear: trench coat
+    - Top: cotton t-shirt
+    - Shoes: white sneakers
+    
+    Please only output one or two words per category. Your answer will be used as image search terms.
+    Avoid adjectives like 'comfortable', 'breathable', etc. Just provide item names.
+    """
+    
         response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[
@@ -252,21 +305,11 @@ def result():
         gpt_reply = response.choices[0].message.content
         
     except Exception as e:
-        traceback.print_exc()  # 전체 에러 로그 보기
-        print(f"Error fetching GPT response: {e}")
+        traceback.print_exc()
         gpt_reply = f"GPT ERROR: {str(e)}"
 
     
-    def reply_from_gpt(reply):
-        outfit = {}
-        lines = reply.split("- ")
-        for line in lines:
-            if ":" in line:
-                key, value = line.split(":", 1)
-                key_clean = re.sub(r"\*\*", "", key.strip())  # ** 제거
-                value_clean = re.sub(r"\*\*", "", value.strip())  # ** 제거
-                outfit[key_clean] = value_clean
-        return outfit
+    outfit_dict = reply_from_gpt(gpt_reply)
 
     emoji_map = {
         "Outerwear": "🧥",
@@ -274,12 +317,8 @@ def result():
         "Bottom": "👖",
         "Shoes": "👟",
         "Accessories": "👜",
-        "Additional Consideration": "💡"
-    }
+        "Additional Consideration": "💡"}
 
-    outfit_dict = reply_from_gpt(gpt_reply)
-    
-    
     style_emoji_map = {
     "casual": "👖",       
     "minimal": "👕",     
@@ -289,13 +328,15 @@ def result():
     "vintage": "🧥",      
     "formal": "👔",      
     "classic": "🧑‍💼",    
-    "sporty": "🎽"        
-    }
-
-
+    "sporty": "🎽"}
     style_icon = style_emoji_map.get(style.lower(), "🧍")
+    
+    
+    search_query = build_search_query(outfit_dict, gender, style)
+    image_urls = get_pinterest_images(search_query, GOOGLE_API_KEY, CX)
 
-
+    search_url = f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '+')}"
+    
     return render_template("result.html",
                             city=city,
                             style=style,
@@ -310,7 +351,11 @@ def result():
                             description=description,
                             gpt_reply=gpt_reply,
                             outfit=outfit_dict,
-                            emoji=emoji_map)
+                            emoji=emoji_map,
+                            search_url=search_url,
+                            image_urls=image_urls,
+                            search_query=search_query 
+)
 
 
 @app.route('/logout')
