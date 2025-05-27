@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-:root{ --x:50%; --y:50%; --bx:50%; --by:50%; }
+/* ---------- global gradient that follows the mouse ---------- */
+:root { --x: 50%; --y: 50%; }
 
-/* page background */
 body{
   background: radial-gradient(circle at var(--x) var(--y),
                                #f5f7fa 0%, #474747 100%);
@@ -10,22 +10,22 @@ body{
   height:100vh; margin:0; font-family:'Poppins',sans-serif;
 }
 
-/* white card */
+/* ---------- white card ---------- */
 .weather-style-box{
   background:#fff;
   padding:56px 48px;
   border-radius:24px;
   box-shadow:0 12px 30px rgba(0,0,0,.15);
-  max-width:520px; width:100%;
+  width:100%; max-width:520px;
   animation:fadeIn .6s ease-in-out;
   position:relative; overflow:hidden;
 }
 
-/* moving spotlight */
+/* spotlight INSIDE card */
 .weather-style-box::before{
   content:"";
   position:absolute; inset:0;
-  background:radial-gradient(circle at var(--bx) var(--by),
+  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),
                              rgba(255,255,255,.75) 0%,
                              rgba(255,255,255,0)   45%,
                              rgba(0,0,0,.06)       75%,
@@ -35,48 +35,67 @@ body{
 }
 
 .weather-style-box h2{
-  margin:0 0 18px; font-size:30px; font-weight:600; color:#222; text-align:center;
+  margin:0 0 18px;
+  font-size:30px; font-weight:600; color:#222; text-align:center;
 }
+
 .weather-style-box p{
-  margin:0 0 32px; font-size:15px; line-height:1.55; color:#555; text-align:center;
+  margin:0 0 32px;
+  font-size:15px; line-height:1.55; color:#555; text-align:center;
 }
 
-.style-form{
-    display:flex;
-    flex-direction:column;
-    gap:22px;                
-}
-
-.radio-list label{         
-    display:flex;            
-    align-items:center;
-    font-size:15px;
-    margin-bottom:6px;
-}
-  .radio-list input{margin-right:8px;}
-  
-.style-form .btn{width:100%; margin-top:6px;}
-
-/* form groups */
+/* form layout */
 .style-form .form-group{margin-bottom:26px;}
 .style-form label{font-size:15px; font-weight:500; color:#444;}
+.style-form select,
+.style-form input[type="radio"]{font-family:'Poppins',sans-serif;}
+
+.style-form {
+    width: 100%;
+    max-width: 100%;
+  }  
 
 select{
   width:100%; max-width:260px;
-  padding:10px 12px; border:1px solid #ccc; border-radius:8px;
+  padding:10px 12px;
+  border:1px solid #ccc; border-radius:8px;
   font-size:15px; background:#fff;
 }
 
-input[type="radio"]{margin-right:6px;}
-.form-group label + br{line-height:10px;}
+/* radio list spacing */
+.form-group input[type="radio"]{margin-right:6px;}
+.form-group label + br{line-height:10px;} /* tighten lines */
 
-/* call-to-action button */
+/* button */
 .btn{
-  display:block; width:100%; margin-top:10px; padding:14px;
-  background:#000; color:#fff; border:none; border-radius:8px;
-  font-size:16px; font-weight:500; cursor:pointer;
-  transition:background-color .3s, transform .2s ease;
+  display:block; width:100%;
+  margin-top:10px; padding:14px;
+  background:#000; color:#fff; border:none;
+  border-radius:8px; font-size:16px; font-weight:500;
+  cursor:pointer; transition:background-color .3s, transform .2s ease;
 }
 .btn:hover{background:#333; transform:translateY(-2px);}
 
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+/* fade animation */
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+
+/* Make radio buttons horizontal */
+.horizontal-radio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .horizontal-radio label {
+    white-space: nowrap;
+    font-size: 14px;
+    color: #444;
+  }
+  
+  /* Adjust button spacing */
+  .btn {
+    margin-top: 12px;
+    width: 100%;
+  }
+  
