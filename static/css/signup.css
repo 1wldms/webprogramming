@@ -39,15 +39,15 @@ body {
     pointer-events:none;
     transition:background-position .05s;
 }
-  
+
 .signup-box h2 {
     text-align: center;
     margin-bottom: 30px;
     font-size: 28px;
     font-weight: 600;
     color: #333;
-  }
-  
+}
+
   /* form elements */
 .form-group,
 .gender-group {
