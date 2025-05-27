@@ -13,7 +13,9 @@ app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = openai.OpenAI()
+
 weather_api_key = os.getenv("WEATHER_API_KEY")
 
 
@@ -202,6 +204,7 @@ def result():
         special_notes = []
 
         weather_main = weather_data['weather'][0]['main'].lower()
+        
         if 'rain' in weather_main or 'rain' in weather_data or 'snow' in weather_main or 'snow' in weather_data:
             special_notes.append("⚠️ It is raining or snowing. Consider waterproof clothing, non-slip shoes, or carrying an umbrella.")
 
@@ -238,8 +241,7 @@ def result():
     - Additional Consideration: ...
 
     Be concise and avoid long paragraphs. Keep each item to 1–2 sentences explaining why it's suitable."""
-
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[
                 {"role": "user", "content": prompt}
@@ -248,7 +250,7 @@ def result():
             temperature=0.7,
         )
 
-        gpt_reply = response["choices"][0]["message"]["content"]
+        gpt_reply = response.choices[0].message.content
         
     except Exception as e:
         traceback.print_exc()  # 전체 에러 로그 보기
