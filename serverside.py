@@ -145,13 +145,11 @@ def build_search_query(outfit_dict, gender, style):
     bottom = outfit_dict.get("Bottom", "").lower()
 
     keywords = []
-    if outer:
-        keywords.append(outer)
-    if bottom:
-        keywords.append(bottom)
-    if top:
-        keywords.append(top)
-    selected = keywords[:2]  # 최대 2개
+    for kw in [outer, bottom, top]:
+        if kw and kw != "none":
+            keywords.append(kw)
+    
+    selected = keywords[:2] 
 
     selected.insert(0, gender)
     selected.append(f"{style} outfit")
