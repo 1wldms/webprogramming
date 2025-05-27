@@ -1,94 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> Style-It | Weather and Style! </title>
+  <meta charset="UTF-8" />
+  <title>Style-It | Weather & Style</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
 </head>
 <body>
   <div class="weather-style-box">
     <h2>We’ll recommend an outfit based on the weather and your style!</h2>
-    <p>Please select your <strong>location</strong> and <strong>style</strong> below<br>
-    We’ll show you outfit suggestions based on live weather and your selected preferences.</p>
+    <p>Please select your <strong>location</strong> and <strong>style</strong> below.<br>
+       We’ll show you outfit suggestions based on live weather and your preferences.</p>
 
     <form action="{{ url_for('result') }}" method="POST" class="style-form">
-      <!-- 지역 선택 -->
+      <!-- city -->
       <div class="form-group">
         <label for="city">Select a city:</label>
         <select id="city" name="city" required>
           <option value="" disabled selected>-- Choose a city --</option>
-          <option value="Seoul">Seoul</option>
-          <option value="Tokyo">Tokyo</option>
-          <option value="Shanghai">Shanghai</option>
-          <option value="Manila">Manila</option>
-          <option value="Los Angeles">Los Angeles</option>
-          <option value="Bangkok">Bangkok</option>
-          <option value="New York">New York</option>
-          <option value="London">London</option>
-          <option value="Sydney">Sydney</option>
-          <option value="Vancouver">Vancouver</option>
-          <option value="Paris">Paris</option>
-          <option value="Berlin">Berlin</option>
-          <option value="Dubai">Dubai</option>
-          <option value="Singapore">Singapore</option>
-          <option value="Brasilia">Brazilia</option>
-          <option value="Cairo">Cairo</option>
-          <option value="Sāo Paulo">Sao Paulo</option>
-          <option value="Delhi">Delhi</option>
+          <option>Seoul</option><option>Tokyo</option><option>Shanghai</option>
+          <option>Manila</option><option>Los Angeles</option><option>Bangkok</option>
+          <option>New York</option><option>London</option><option>Sydney</option>
+          <option>Vancouver</option><option>Paris</option><option>Berlin</option>
+          <option>Dubai</option><option>Singapore</option><option>Brasilia</option>
+          <option>Cairo</option><option>São Paulo</option><option>Delhi</option>
         </select>
       </div>
 
-    </div>
+      <!-- style -->
+      <div class="form-group radio-list">
+        <label>Choose your style:</label>
+      
+        <label><input type="radio" name="style" value="Casual"  required> Casual</label>
+        <label><input type="radio" name="style" value="Minimal"> Minimal</label>
+        <label><input type="radio" name="style" value="Street">  Street</label>
+        <label><input type="radio" name="style" value="Chic">    Chic</label>
+        <label><input type="radio" name="style" value="Vintage"> Vintage</label>
+        <label><input type="radio" name="style" value="Feminine"> Feminine</label>
+      </div>
 
-    <!-- 스타일 선택 -->
-    <div class="form-group">
-      <label>Choose your style:</label><br>
-    
-      <!-- 데일리/기본 스타일 -->
-      <label><input type="radio" name="style" value="Casual" required> Casual </label><br>
-      <label><input type="radio" name="style" value="Minimal"> Minimal </label><br>
-    
-      <!-- 트렌디 / 감성 -->
-      <label><input type="radio" name="style" value="Street"> Street </label><br>
-      <label><input type="radio" name="style" value="Chic"> Chic </label><br>
-      <label><input type="radio" name="style" value="Girlish"> Girlish </label><br>
-      <label><input type="radio" name="style" value="Vintage"> Vintage </label><br>
-    
-      <!-- 포멀 / 클래식 -->
-      <label><input type="radio" name="style" value="Formal"> Formal </label><br>
-      <label><input type="radio" name="style" value="Classic"> Classic </label><br>
-    
-      <!-- 활동적 / 기타 -->
-      <label><input type="radio" name="style" value="Sporty"> Sporty </label><br>
-    </div>
-
-      <!-- 제출 버튼 -->
-      <button type="submit" class="btn"> See Results! </button>
+      <button type="submit" class="btn">See Results!</button>
     </form>
   </div>
 
+  <!-- gradient / spotlight JS -->
   <script>
-    /* global gradient follows cursor */
-    document.addEventListener('mousemove',e=>{
-      const x = e.clientX/window.innerWidth  *100;
-      const y = e.clientY/window.innerHeight *100;
-      document.documentElement.style.setProperty('--x',`${x}%`);
-      document.documentElement.style.setProperty('--y',`${y}%`);
+    /* page-wide gradient follows cursor */
+    document.addEventListener('mousemove', e=>{
+      document.documentElement.style.setProperty('--x', e.clientX/window.innerWidth*100 + '%');
+      document.documentElement.style.setProperty('--y', e.clientY/window.innerHeight*100 + '%');
     });
-    
+
     /* spotlight inside card */
-    const card=document.querySelector('.weather-style-box');
-    card.addEventListener('mousemove',e=>{
-      const r=card.getBoundingClientRect();
-      const bx=(e.clientX-r.left)/r.width *100;
-      const by=(e.clientY-r.top )/r.height*100;
-      card.style.setProperty('--bx',`${bx}%`);
-      card.style.setProperty('--by',`${by}%`);
+    const card = document.querySelector('.weather-style-box');
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--bx', (e.clientX-r.left)/r.width*100 + '%');
+      card.style.setProperty('--by', (e.clientY-r.top)/r.height*100 + '%');
     });
-    card.addEventListener('mouseleave',()=>{
+    card.addEventListener('mouseleave', ()=>{
       card.style.setProperty('--bx','50%');
       card.style.setProperty('--by','50%');
     });
-    </script>
-    
+  </script>
 </body>
 </html>
