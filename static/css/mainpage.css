@@ -1,56 +1,78 @@
-/* Basic full-page layout */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --x: 50%;
+    --y: 50%;
+    --bx: 50%;
+    --by: 50%;
+}
+
 body {
-    background-color: #f4f4f4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at var(--x) var(--y),
+                                #f5f7fa 0%, #a8a8a8 100%);
+                                display:flex; align-items:center; justify-content:center;
+                                height:100vh; margin:0; font-family:'Poppins',sans-serif;
 }
 
 /* Login box styling */
 .login-box {
     background: white;
     padding: 60px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     width: 100%;
-    max-width: 700px;
+    max-width: 600px;
     text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
 }
 
 .login-box h2 {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     font-weight: 600;
-    font-size: 28px;
+    font-size: 32px;
+    color: #222;
 }
 
 .login-box p {
-    font-size: 18px;
+    font-size: 17px;
     color: #555;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
+    line-height: 1.6;
 }
 
 .btn-group {
     display: flex;
     justify-content: center;
-    gap: 14px;
+    gap: 16px;
     flex-wrap: wrap;
 }
 
 .btn {
-    background-color: #000000;
-    color: white;
-    padding: 12px 24px;
+    background-color: #000;
+    color: #fff;
+    padding: 12px 28px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: transform 0.2s ease, background-color 0.3s;
 }
 
 .btn:hover {
-    background-color: #333333;
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

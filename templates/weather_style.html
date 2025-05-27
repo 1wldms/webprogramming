@@ -2,14 +2,9 @@
 <html lang="en">
 <head>
     <title> Style-It | Weather and Style! </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/weather_style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
 </head>
 <body>
-  <!-- 오른쪽 상단 마이페이지 박스 -->
-  <div class="top-nav">
-    <a href="{{ url_for('mypage') }}">My Page</a>
-  </div>
-
   <div class="weather-style-box">
     <h2>We’ll recommend an outfit based on the weather and your style!</h2>
     <p>Please select your <strong>location</strong> and <strong>style</strong> below<br>
@@ -42,31 +37,58 @@
         </select>
       </div>
 
-      <!-- 스타일 선택 -->
-      <div class="form-group">
-        <label>Choose your style:</label><br>
-      
-        <!-- 데일리/기본 스타일 -->
-        <label><input type="radio" name="style" value="Casual" required> Casual </label><br>
-        <label><input type="radio" name="style" value="Minimal"> Minimal </label><br>
-      
-        <!-- 트렌디 / 감성 -->
-        <label><input type="radio" name="style" value="Street"> Street </label><br>
-        <label><input type="radio" name="style" value="Chic"> Chic </label><br>
-        <label><input type="radio" name="style" value="Girlish"> Girlish </label><br>
-        <label><input type="radio" name="style" value="Vintage"> Vintage </label><br>
-      
-        <!-- 포멀 / 클래식 -->
-        <label><input type="radio" name="style" value="Formal"> Formal </label><br>
-        <label><input type="radio" name="style" value="Classic"> Classic </label><br>
-      
-        <!-- 활동적 / 기타 -->
-        <label><input type="radio" name="style" value="Sporty"> Sporty </label><br>
-      </div>
+    </div>
+
+    <!-- 스타일 선택 -->
+    <div class="form-group">
+      <label>Choose your style:</label><br>
+    
+      <!-- 데일리/기본 스타일 -->
+      <label><input type="radio" name="style" value="Casual" required> Casual </label><br>
+      <label><input type="radio" name="style" value="Minimal"> Minimal </label><br>
+    
+      <!-- 트렌디 / 감성 -->
+      <label><input type="radio" name="style" value="Street"> Street </label><br>
+      <label><input type="radio" name="style" value="Chic"> Chic </label><br>
+      <label><input type="radio" name="style" value="Girlish"> Girlish </label><br>
+      <label><input type="radio" name="style" value="Vintage"> Vintage </label><br>
+    
+      <!-- 포멀 / 클래식 -->
+      <label><input type="radio" name="style" value="Formal"> Formal </label><br>
+      <label><input type="radio" name="style" value="Classic"> Classic </label><br>
+    
+      <!-- 활동적 / 기타 -->
+      <label><input type="radio" name="style" value="Sporty"> Sporty </label><br>
+    </div>
 
       <!-- 제출 버튼 -->
       <button type="submit" class="btn"> See Results! </button>
     </form>
   </div>
+
+  <script>
+    /* global gradient follows cursor */
+    document.addEventListener('mousemove',e=>{
+      const x = e.clientX/window.innerWidth  *100;
+      const y = e.clientY/window.innerHeight *100;
+      document.documentElement.style.setProperty('--x',`${x}%`);
+      document.documentElement.style.setProperty('--y',`${y}%`);
+    });
+    
+    /* spotlight inside card */
+    const card=document.querySelector('.weather-style-box');
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const bx=(e.clientX-r.left)/r.width *100;
+      const by=(e.clientY-r.top )/r.height*100;
+      card.style.setProperty('--bx',`${bx}%`);
+      card.style.setProperty('--by',`${by}%`);
+    });
+    card.addEventListener('mouseleave',()=>{
+      card.style.setProperty('--bx','50%');
+      card.style.setProperty('--by','50%');
+    });
+    </script>
+    
 </body>
 </html>
