@@ -14,7 +14,6 @@ app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 load_dotenv()
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-client = openai.OpenAI()
 
 weather_api_key = os.getenv("WEATHER_API_KEY")
 
