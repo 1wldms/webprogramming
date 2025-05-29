@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 * {
@@ -8,26 +9,23 @@
 }
 
 body {
-  /* --- CHANGED TO GREY BACKGROUND --- */
-  background-color: #f0f0f0; /* Light grey background for the entire page */
+  background-color: #f0f0f0;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* Removed explicit color here. Text inside .box will be handled by .box or its children. */
 }
 
 .box {
-  background-color: white; /* Keep the inner box white */
+  background-color: white;
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 60px;
   max-width: 800px;
   width: 100%;
-  color: #333; /* Ensure text inside the white box is dark and visible */
+  color: #333;
 }
 
-/* Password section */
 .password-section {
   margin: 20px 0;
   position: relative;
@@ -39,26 +37,34 @@ body {
   border: 1px solid #ccc;
   border-radius: 10px;
   font-size: 16px;
+  line-height: 1.5;
+  height: 48px;
 }
 
-/* 👁 Eye icon button with perfect vertical centering */
 .password-section button {
   position: absolute;
-  top: 50%;
   right: 12px;
-  transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 20px;
   cursor: pointer;
   height: 28px;
   width: 28px;
-  line-height: 28px;
   padding: 0;
-  color: #333; /* Eye icon color should be dark as it's on a white background */
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: calc(50% + 13px);
+  transform: translateY(-50%);
 }
 
-/* Liked outfits */
+.password-section button ion-icon {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
 .liked-outfits {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -72,7 +78,6 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Circle-expand Ionicon buttons (default state - black) */
 .circle-expand-buttons {
   display: flex;
   justify-content: center;
@@ -86,12 +91,12 @@ body {
   justify-content: center;
   width: 60px;
   height: 60px;
-  border-radius: 50%;
-  background-color: #000000; /* Black background for buttons */
-  border: 1px solid #333333; /* Darker border for contrast */
+  border-radius: 30px;
+  background-color: #000000;
+  border: 1px solid #333333;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   text-decoration: none;
-  color: #ffffff; /* White text/icon color on black buttons */
+  color: #ffffff;
   font-weight: 600;
   font-size: 16px;
   overflow: hidden;
@@ -100,7 +105,6 @@ body {
   padding: 0;
 }
 
-/* Icon default state */
 .circle-expand-btn ion-icon {
   font-size: 24px;
   flex-shrink: 0;
@@ -113,7 +117,6 @@ body {
   z-index: 2;
 }
 
-/* Text hidden initially */
 .circle-expand-btn span {
   white-space: nowrap;
   opacity: 0;
@@ -122,19 +125,16 @@ body {
   transform: translateX(100%);
   transition: all 0.35s ease;
   z-index: 1;
-  width: 100%;
-  text-align: center;
 }
 
-/* Hover reveal label, hide icon - Remains black on hover */
 .circle-expand-btn:hover {
   width: 160px;
-  background-color: #000000; /* Keep black background on hover */
-  border: 1px solid #666666; /* Slightly lighter border on hover for subtle feedback */
-  color: #ffffff; /* Text color remains white on hover */
+  background-color: #000000;
+  border: 1px solid #666666;
+  color: #ffffff;
   justify-content: center;
   padding: 0 20px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Slightly more prominent shadow on hover */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 .circle-expand-btn:hover ion-icon {
@@ -145,10 +145,85 @@ body {
 
 .circle-expand-btn:hover span {
   opacity: 1;
-  transform: translateX(-50%);
-  left: 50%;
-  position: absolute;
+  position: relative;
+  left: auto;
+  transform: translateX(0);
   width: 100%;
   text-align: center;
   z-index: 2;
+}
+
+.circle-to-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #000000;
+  border: 1px solid #333333;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  overflow: hidden;
+  transition: all 0.35s ease, width 0.35s ease, border-radius 0.35s ease;
+  position: relative;
+  padding: 0;
+}
+
+.circle-to-back-button .default-icon {
+  font-size: 24px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.35s ease;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.circle-to-back-button .hover-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 0.35s ease;
+  flex-shrink: 0;
+  flex-grow: 0;
+  color: #ffffff;
+}
+
+.circle-to-back-button .button-text {
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.35s ease;
+  color: #ffffff;
+}
+
+.circle-to-back-button:hover {
+  width: 160px;
+  border-radius: 25px;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #666666;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  justify-content: center;
+  padding: 12px 25px;
+}
+
+.circle-to-back-button:hover .default-icon {
+  opacity: 0;
+  transform: translateX(-200%);
+}
+
+.circle-to-back-button:hover .hover-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.circle-to-back-button:hover .button-text {
+  opacity: 1;
+  transform: translateX(0);
 }

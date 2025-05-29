@@ -1,77 +1,165 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Weather & Style Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather and Style Recommendation</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>Weather and Style Recommendation</h1>
+      <div class="header-buttons">
+        <button class="my-page-button" onclick="window.location.href='{{ url_for('mypage') }}'">My Page</button>
+      </div>
+    </header>
 
-    <div class="top-nav">
-        <a href="{{ url_for('mypage') }}">My Page</a>
-    </div>
+    <main>
+      <div class="info-calendar-container">
+        <div class="info-box card">
+          <h2>Information</h2>
+          <p><strong>Location:</strong> {{ city }}</p>
+          <p><strong>Date:</strong> {{ current_date }}</p>
+          <p><strong>Style:</strong> {{ style }}</p>
+        </div>
 
-    <h1>🌤 Weather and Style Recommendation</h1>
-    
-    <div class="section">
-        <p><strong>City:</strong> {{ city }}</p>
-        <p><strong>Style:</strong> {{ style_icon }} {{ style }}</p>
-    </div>
+        <div class="calendar-box card">
+          <div id="mini-calendar"></div>
+        </div>
+      </div>
 
-    <div class="section">
-        <h2>📊 Current Weather</h2>
-        <ul>
-            <li>🌡 Temperature: {{ temp }}°C (Feels Like: {{ feels_like }}°C)</li>
-            <li>📈 Max: {{ temp_max }}°C / 📉 Min: {{ temp_min }}°C</li>
-            <li>☁️ Cloud: {{ cloud_status }}</li>
-            <li>💨 Wind: {{ wind_status }}</li>
-            <li>💧 Humidity: {{ humidity }}%</li>
-            <li>📝 Condition: {{ description }}</li>
-        </ul>
-    </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+          <div class="weather-box" style="flex: 1;">
+            <h2><i class="fas fa-cloud"></i> Current Weather</h2>
+            <p><i class="fas fa-thermometer-half"></i> Temperature: {{ temp }}°C (Feels Like: {{ feels_like }}°C)</p>
+            <p><i class="fas fa-temperature-high"></i> Max: {{ temp_max }}°C / <i class="fas fa-temperature-low"></i> Min: {{ temp_min }}°C</p>
+            <p><i class="fas fa-cloud"></i> Cloud: {{ cloud_status }}</p>
+            <p><i class="fas fa-wind"></i> Wind: {{ wind_status }}</p>
+            <p><i class="fas fa-tint"></i> Humidity: {{ humidity }}%</p>
+            <p><i class="fas fa-sun"></i> Condition: {{ description }}</p>
+          </div>
 
-    <h3>{{ style_icon }} Outfit Recommendation</h3>
-    <table style="border-collapse: collapse; width: 100%; margin-top: 15px;">
-        <tbody>
-            {% for key, value in outfit.items() %}
-                <tr style="border-bottom: 1px solid #ddd; padding: 10px 0;">
-                    <td style="padding: 8px 12px; font-weight: bold; white-space: nowrap;">
-                        {{ emoji.get(key, '') }} {{ key }}
-                    </td>
-                    <td style="padding: 8px 12px;">{{ value }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h3>📸 Outfit Image Suggestions</h3>
-
-    <p>We searched Pinterest using the keyword: <strong>"{{ search_query }}"</strong></p>
-
-    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
-        {% if image_urls %}
-            {% for url in image_urls %}
-                <div style="width: 200px;">
-                    <img src="{{ url }}" alt="Outfit image" style="width: 100%; border-radius: 10px;" />
+          <div class="animated-widget" style="width: 220px; height: 220px; transform: scale(0.55); transform-origin: top right;">
+            <div class="frame">
+              <div class="moon">
+                <div class="moon-crater1"></div>
+                <div class="moon-crater2"></div>
+              </div>
+              <div class="hill-bg-1"></div>
+              <div class="hill-bg-2"></div>
+              <div class="hill-fg-1"></div>
+              <div class="hill-fg-2"></div>
+              <div class="hill-fg-3"></div>
+              <div class="front">
+                <div>
+                  <div class="temperature">{{ temp|round(0) }}°</div>
+                  <div class="icons">
+                    <i class="fas fa-wind"></i><br/><i class="fas fa-tint"></i>
+                  </div>
+                  <div>
+                    <div class="info">{{ wind_status.split('-')[0] }}<br>{{ humidity }}%</div>
+                    <table class="preview">
+                      <tbody>
+                        <tr><td>Max</td><td>{{ temp_max|round(0) }}°</td></tr>
+                        <tr><td>Min</td><td>{{ temp_min|round(0) }}°</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+                <div class="proverb">"Frogs croaking in the lagoon,<br/>Means rain will come real soon."</div>
+              </div>
+              {% for i in range(1, 11) %}
+                <div class="drop-big-{{ i }}"></div>
+                <div class="drop-medium-{{ i }}"></div>
+                <div class="drop-small-{{ i }}"></div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card outfit-card">
+        <h2><i class="fas fa-sparkles"></i> Outfit Recommendation</h2>
+        {% for key, value in outfit.items() %}
+          <p><strong>{{ key }}:</strong> {{ value }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="card image-suggestions-card">
+        <h2><i class="fab fa-pinterest"></i> Outfit Image Suggestions</h2>
+        {% if image_urls %}
+          <p>We searched Pinterest using the keyword: "{{ search_query }}"</p>
+          <div class="pinterest-images">
+            {% for img_url in image_urls %}
+              <img src="{{ img_url }}" alt="Outfit suggestion" class="pinterest-img">
             {% endfor %}
+          </div>
         {% else %}
-            <p>No images found for this style.</p>
+          <p>We searched Pinterest using the keyword: "{{ search_query }}"</p>
+          <p>No images found for this style.</p>
         {% endif %}
-    </div>
-
-    <!-- Pinterest 버튼 추가 -->
-    <div style="margin-top: 30px;">
         <h3>Looking for more in Pinterest?</h3>
-        <a href="{{ search_url }}" target="_blank">
-            <button style="padding: 10px 16px; font-size: 16px; background-color: #E60023; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                🔍 View "{{ style }}" style on Pinterest
-            </button>
-        </a>
-    </div>
+        <div class="button-group">
+          <a href="{{ search_url }}" target="_blank" class="pinterest-button">
+            <i class="fab fa-pinterest"></i> Pinterest
+          </a>
+          <button onclick="window.location.href='{{ url_for('weather_style') }}'" class="back-button-bottom">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    <a href="{{ url_for('weather_style') }}">🔙 Back</a>
-
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      const currentDay = today.getDate();
+      function generateCalendar(month, year, currentDayHighlight) {
+        const calendarElement = document.getElementById('mini-calendar');
+        calendarElement.innerHTML = '';
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const dayNamesShort = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const monthHeader = document.createElement('div');
+        monthHeader.classList.add('calendar-month-header');
+        monthHeader.textContent = `${monthNames[month]} ${year}`;
+        calendarElement.appendChild(monthHeader);
+        const daysOfWeekHeader = document.createElement('div');
+        daysOfWeekHeader.classList.add('calendar-days-of-week');
+        dayNamesShort.forEach(day => {
+          const span = document.createElement('span');
+          span.textContent = day;
+          daysOfWeekHeader.appendChild(span);
+        });
+        calendarElement.appendChild(daysOfWeekHeader);
+        const calendarGrid = document.createElement('div');
+        calendarGrid.classList.add('calendar-grid');
+        for (let i = 0; i < firstDayOfMonth; i++) {
+          const emptyCell = document.createElement('span');
+          emptyCell.classList.add('empty-cell');
+          calendarGrid.appendChild(emptyCell);
+        }
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayCell = document.createElement('span');
+          dayCell.textContent = day;
+          dayCell.classList.add('calendar-day');
+          if (year === today.getFullYear() && month === today.getMonth() && day === currentDayHighlight) {
+            dayCell.classList.add('current-day');
+          }
+          calendarGrid.appendChild(dayCell);
+        }
+        calendarElement.appendChild(calendarGrid);
+      }
+      generateCalendar(currentMonth, currentYear, currentDay);
+    });
+  </script>
 </body>
 </html>

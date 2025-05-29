@@ -7,6 +7,7 @@ import openai
 import traceback
 from dotenv import load_dotenv
 import re
+import datetime # Import datetime
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -335,6 +336,14 @@ def result():
 
     search_url = f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '+')}"
     
+    # --- Calendar Data Integration ---
+    now = datetime.datetime.now()
+    current_date_formatted = now.strftime("%B %d, %Y") # e.g., May 29, 2025
+    current_month_name = now.strftime("%B") # e.g., May
+    current_year = now.year
+    current_day = now.day # Day of the month (e.g., 29)
+    # --- End Calendar Data Integration ---
+
     return render_template("result.html",
                             city=city,
                             style=style,
@@ -352,7 +361,12 @@ def result():
                             emoji=emoji_map,
                             search_url=search_url,
                             image_urls=image_urls,
-                            search_query=search_query 
+                            search_query=search_query,
+                            # New calendar data
+                            current_date=current_date_formatted,
+                            current_month_name=current_month_name,
+                            current_year=current_year,
+                            current_day=current_day
 )
 
 
