@@ -37,9 +37,12 @@ def init_db():
                 ''')
     
     cursor.execute('''
-                CREATE TABLE likes(
+                CREATE TABLE history(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    style TEXT NOT NULL,
+                    search_query TEXT NOT NULL,
                     img TEXT NOT NULL,
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
@@ -229,16 +232,16 @@ def mypage():
         
         password, gender = user
         
-        p = "SELECT img FROM likes WHERE username = ? ORDER BY id DESC;"
+        p = "SELECT date, style, search_query, img FROM history WHERE username = ? ORDER BY id DESC;"
         cursor.execute(p, (username,))
-        likes = [row[0] for row in cursor.fetchall()]
+        history_data = cursor.fetchall()
         
     return render_template(
         "mypage.html",
         username = username,
         password = password,
         gender = gender,
-        likes = likes,
+        history_data = history_data,
     )
 
 @app.route('/Style-It', methods=["GET"])
@@ -343,6 +346,20 @@ def result():
     current_year = now.year
     current_day = now.day # Day of the month (e.g., 29)
     # --- End Calendar Data Integration ---
+
+    if username and image_urls:
+        with sqlite3.connect(DB_user) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO history (username, date, style, search_query, img)
+                VALUES (?, ?, ?, ?, ?);
+            ''', (
+                username,
+                now.strftime("%Y-%m-%d"),
+                style,
+                search_query,
+                image_urls[0]
+            ))
 
     return render_template("result.html",
                             city=city,

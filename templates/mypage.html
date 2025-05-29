@@ -21,14 +21,22 @@
         👁️ </button>
     </div>
 
-    <h2>Liked Outfits</h2>
-    <div class="Style History">
-      {% for img in likes %}
-        <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="liked outfit" class="liked-img">
-      {% else %}
+    <h2>Style History</h2>
+    {% if history_data %}
+        {% for date, style, query, img in history_data %}
+        <div style="display: flex; align-items: center; margin-bottom: 2em;">
+            <div style="flex: 1; padding-right: 1em;">
+                <p><strong>{{ date }}</strong> | Style: {{ style }}</p>
+                <p>Outfit: {{ query }}</p>
+            </div>
+            <div style="flex-shrink: 0;">
+                <img src="{{ img }}" width="150" style="border-radius: 8px;">
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
         <p>No History yet!</p>
-      {% endfor %}
-    </div>
+    {% endif %}
 
     <div class="circle-expand-buttons">
       <a href="{{ url_for('weather_style') }}" class="circle-expand-btn">
