@@ -22,11 +22,11 @@
     </div>
 
     <h2>Liked Outfits</h2>
-    <div class="liked-outfits">
+    <div class="Style History">
       {% for img in likes %}
         <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="liked outfit" class="liked-img">
       {% else %}
-        <p>No liked outfits yet!</p>
+        <p>No History yet!</p>
       {% endfor %}
     </div>
 
