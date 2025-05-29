@@ -8,22 +8,26 @@
 }
 
 body {
-  background-color: #ffffff;
+  /* --- CHANGED TO GREY BACKGROUND --- */
+  background-color: #f0f0f0; /* Light grey background for the entire page */
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  /* Removed explicit color here. Text inside .box will be handled by .box or its children. */
 }
 
 .box {
-  background-color: white;
+  background-color: white; /* Keep the inner box white */
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 60px;
   max-width: 800px;
   width: 100%;
+  color: #333; /* Ensure text inside the white box is dark and visible */
 }
 
+/* Password section */
 .password-section {
   margin: 20px 0;
   position: relative;
@@ -37,6 +41,7 @@ body {
   font-size: 16px;
 }
 
+/* 👁 Eye icon button with perfect vertical centering */
 .password-section button {
   position: absolute;
   top: 50%;
@@ -44,15 +49,16 @@ body {
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 20px; 
+  font-size: 20px;
   cursor: pointer;
-  height: 28px; 
+  height: 28px;
   width: 28px;
-  line-height: 28px; 
+  line-height: 28px;
   padding: 0;
-  color: #333;
+  color: #333; /* Eye icon color should be dark as it's on a white background */
 }
 
+/* Liked outfits */
 .liked-outfits {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -66,6 +72,7 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/* Circle-expand Ionicon buttons (default state - black) */
 .circle-expand-buttons {
   display: flex;
   justify-content: center;
@@ -76,68 +83,72 @@ body {
 .circle-expand-btn {
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #f0f0f0;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #000000; /* Black background for buttons */
+  border: 1px solid #333333; /* Darker border for contrast */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   text-decoration: none;
-  color: #333;
+  color: #ffffff; /* White text/icon color on black buttons */
   font-weight: 600;
   font-size: 16px;
-  overflow: hidden; 
+  overflow: hidden;
   transition: all 0.35s ease;
-  position: relative; 
-  padding: 0; 
+  position: relative;
+  padding: 0;
 }
 
-
+/* Icon default state */
 .circle-expand-btn ion-icon {
   font-size: 24px;
-  flex-shrink: 0; 
-  flex-grow: 0; 
-  width: 60px; 
-  text-align: center; 
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: 60px;
+  text-align: center;
   opacity: 1;
   transform: scale(1);
   transition: all 0.35s ease;
   z-index: 2;
 }
 
+/* Text hidden initially */
 .circle-expand-btn span {
   white-space: nowrap;
   opacity: 0;
   position: absolute;
-  left: 50%; 
-  transform: translateX(100%); 
+  left: 50%;
+  transform: translateX(100%);
   transition: all 0.35s ease;
-  z-index: 1; 
-  width: 100%; 
-  text-align: center; 
+  z-index: 1;
+  width: 100%;
+  text-align: center;
 }
 
+/* Hover reveal label, hide icon - Remains black on hover */
 .circle-expand-btn:hover {
-  width: 160px; 
-  background: linear-gradient(to right, #ff6ec4, #7873f5);
-  color: white;
-  justify-content: center; 
-  padding: 0 20px; 
+  width: 160px;
+  background-color: #000000; /* Keep black background on hover */
+  border: 1px solid #666666; /* Slightly lighter border on hover for subtle feedback */
+  color: #ffffff; /* Text color remains white on hover */
+  justify-content: center;
+  padding: 0 20px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Slightly more prominent shadow on hover */
 }
 
 .circle-expand-btn:hover ion-icon {
   opacity: 0;
   transform: translateX(-100%);
-  width: 0; 
+  width: 0;
 }
 
 .circle-expand-btn:hover span {
   opacity: 1;
-  transform: translateX(-50%); 
-  left: 50%; 
-  position: absolute; 
-  width: 100%; 
-  text-align: center; 
-  z-index: 2; 
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
 }
