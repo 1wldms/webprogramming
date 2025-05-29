@@ -1,45 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Style-It | My Page</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Style-It | My Page</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-    <div class="box"> 
-        <h1>Welcome, {{ username }}!</h1>
-        <p><strong>Gender:</strong> {{ gender }}</p>
+  <div class="box">
+    <h1>Welcome, {{ username }}!</h1>
+    <p><strong>Gender:</strong> {{ gender }}</p>
 
-        <div class="password-section">
-            <label for="pw"><strong>Password:</strong></label>
-            <input type="password" id="pw" value="{{ password }}" readonly>
-            <button onclick="togglePW()">👁</button> 
-        </div>
-
-        <br><br>
-        
-        <h2> Liked Outfits</h2>
-        <div class="likes">
-            {% for img in likes %}      
-                <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="liked outfit" class="liked-img">
-            {% else %}
-                <p>No liked outfits yet!</p>
-            {% endfor %}
-        </div>
-
-        <div class="btn-group">
-            <a href="{{ url_for('weather_style') }}" class="btn">Style-It Again</a>
-            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-            {# <a href="{{ url_for('delete_account') }}" class="btn danger">Delete Account</a> #}
-        </div>
+    <div class="password-section">
+      <label for="pw"><strong>Password:</strong></label>
+      <input type="password" id="pw" value="{{ password }}" readonly>
+      <button onclick="togglePW()">
+        👁️ </button>
     </div>
 
-    <script> 
-        function togglePW() {
-            const pw = document.getElementById("pw");
-            pw.type = pw.type === "password" ? "text" : "password";
-        }
-    </script>
+    <h2>Liked Outfits</h2>
+    <div class="liked-outfits">
+      {% for img in likes %}
+        <img src="{{ url_for('static', filename='images/' ~ img) }}" alt="liked outfit" class="liked-img">
+      {% else %}
+        <p>No liked outfits yet!</p>
+      {% endfor %}
+    </div>
+
+    <div class="circle-expand-buttons">
+      <a href="{{ url_for('weather_style') }}" class="circle-expand-btn">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+        <span>Style-It Again</span>
+      </a>
+      <a href="{{ url_for('index') }}" class="circle-expand-btn">
+        <ion-icon name="log-out-outline"></ion-icon> <span>Logout</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function togglePW() {
+      const pw = document.getElementById("pw");
+      const iconButton = document.querySelector(".password-section button");
+      const isHidden = pw.type === "password";
+
+      pw.type = isHidden ? "text" : "password";
+      iconButton.innerHTML = isHidden ? "‍️" : "👁️";
+    }
+  </script>
 </body>
 </html>
