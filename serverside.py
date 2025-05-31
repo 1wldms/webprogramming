@@ -44,7 +44,7 @@ def init_db():
                     style TEXT NOT NULL,
                     search_query TEXT NOT NULL,
                     img TEXT NOT NULL,
-                    city TEXT NOT NULL
+                    city TEXT NOT NULL,
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
                 ''')
