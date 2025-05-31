@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 /* ---------- global gradient that follows the mouse ---------- */
-:root { --x: 50%; --y: 50%; }
+:root {
+  --x: 50%;
+  --y: 50%;
+  --bx: 50%;
+  --by: 50%;
+}
 
 body{
   background: radial-gradient(circle at var(--x) var(--y),
