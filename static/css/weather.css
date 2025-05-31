@@ -21,19 +21,6 @@ body{
   position:relative; overflow:hidden;
 }
 
-/* spotlight INSIDE card */
-.weather-style-box::before{
-  content:"";
-  position:absolute; inset:0;
-  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),
-                             rgba(255,255,255,.75) 0%,
-                             rgba(255,255,255,0)   45%,
-                             rgba(0,0,0,.06)       75%,
-                             rgba(0,0,0,0)         90%);
-  pointer-events:none;
-  transition:background-position .05s;
-}
-
 .weather-style-box h2{
   margin:0 0 18px;
   font-size:30px; font-weight:600; color:#222; text-align:center;
