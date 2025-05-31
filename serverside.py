@@ -44,13 +44,14 @@ def init_db():
                     style TEXT NOT NULL,
                     search_query TEXT NOT NULL,
                     img TEXT NOT NULL,
+                    city TEXT NOT NULL
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
                 ''')
     conn.commit()
     conn.close()
 
-init_db()
+
 
 
 def get_weather_info(city):
@@ -232,7 +233,7 @@ def mypage():
         
         password, gender = user
         
-        p = "SELECT date, style, search_query, img FROM history WHERE username = ? ORDER BY id DESC;"
+        p = "SELECT date, style, search_query, img, city FROM history WHERE username = ? ORDER BY id DESC;"
         cursor.execute(p, (username,))
         history_data = cursor.fetchall()
         
@@ -358,7 +359,8 @@ def result():
                 now.strftime("%Y-%m-%d"),
                 style,
                 search_query,
-                image_urls[0]
+                image_urls[0],
+                city
             ))
 
     return render_template("result.html",
@@ -393,4 +395,5 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
+    init_db()
     app.run(host='0.0.0.0', port=5000, debug=True)
