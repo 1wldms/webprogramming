@@ -352,8 +352,8 @@ def result():
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO history (username, date, style, search_query, img)
-                VALUES (?, ?, ?, ?, ?);
+                INSERT INTO history (username, date, style, search_query, img, city)
+                VALUES (?, ?, ?, ?, ?, ?);
             ''', (
                 username,
                 now.strftime("%Y-%m-%d"),
