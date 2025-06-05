@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 /* ---------- global gradient that follows the mouse ---------- */
-:root { --x: 50%; --y: 50%; }
+:root {
+  --x: 50%;
+  --y: 50%;
+  --bx: 50%;
+  --by: 50%;
+}
 
 body{
   background: radial-gradient(circle at var(--x) var(--y),
@@ -19,19 +24,6 @@ body{
   width:100%; max-width:520px;
   animation:fadeIn .6s ease-in-out;
   position:relative; overflow:hidden;
-}
-
-/* spotlight INSIDE card */
-.weather-style-box::before{
-  content:"";
-  position:absolute; inset:0;
-  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),
-                             rgba(255,255,255,.75) 0%,
-                             rgba(255,255,255,0)   45%,
-                             rgba(0,0,0,.06)       75%,
-                             rgba(0,0,0,0)         90%);
-  pointer-events:none;
-  transition:background-position .05s;
 }
 
 .weather-style-box h2{
