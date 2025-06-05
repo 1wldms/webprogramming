@@ -45,6 +45,8 @@ def init_db():
                     search_query TEXT NOT NULL,
                     img TEXT NOT NULL,
                     city TEXT NOT NULL,
+                    weather_temp TEXT NOT NULL,
+                    weather_feels_like TEXT NOT NULL,
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
                 ''')
@@ -233,7 +235,7 @@ def mypage():
         
         password, gender = user
         
-        p = "SELECT date, style, search_query, img, city FROM history WHERE username = ? ORDER BY id DESC;"
+        p = "SELECT date, style, search_query, img, city, weather_temp, weather_feels_like FROM history WHERE username = ? ORDER BY id DESC;"
         cursor.execute(p, (username,))
         history_data = cursor.fetchall()
         
@@ -352,15 +354,17 @@ def result():
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO history (username, date, style, search_query, img, city)
-                VALUES (?, ?, ?, ?, ?, ?);
+                INSERT INTO history (username, date, style, search_query, img, city, weather_temp, weather_feels_like)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             ''', (
                 username,
                 now.strftime("%Y-%m-%d"),
                 style,
                 search_query,
                 image_urls[0],
-                city
+                city,
+                temp,
+                feels_like
             ))
 
     return render_template("result.html",
