@@ -344,6 +344,8 @@ def result():
     
     # --- Calendar Data Integration ---
     now = datetime.datetime.now()
+    datetime_str = now.strftime("%Y-%m-%d %H:%M")
+    
     current_date_formatted = now.strftime("%B %d, %Y") # e.g., May 29, 2025
     current_month_name = now.strftime("%B") # e.g., May
     current_year = now.year
@@ -358,7 +360,7 @@ def result():
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             ''', (
                 username,
-                now.strftime("%Y-%m-%d"),
+                datetime_str,
                 style,
                 search_query,
                 image_urls[0],

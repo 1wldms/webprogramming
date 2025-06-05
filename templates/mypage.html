@@ -26,7 +26,9 @@
         {% for date, style, query, img, city, weather_temp, weather_feels_like in history_data %}
         <div style="display: flex; align-items: center; margin-bottom: 2em;">
             <div style="flex: 1; padding-right: 1em;">
-              <p>📅 {{ date }} | 🎨 {{ style }} | 📍 {{ city }}: {{ weather_temp|float|round }}°C, Feels like {{ weather_feels_like|float|round }}°C </p>
+              <p>📅 {{ date }} | 🎨 {{ style }} 📍 {{ city }}</p>
+              <p>🌡️ {{ weather_temp|int }}°C  (Feels like {{ weather_feels_like|int }}°C)  </p>
+              <br>
               <p>🔍 {{ query }}</p>
             </div>
             <div style="flex-shrink: 0;">
