@@ -13,7 +13,7 @@
     <form action="{{ url_for('result') }}" method="POST" class="style-form">
       <!-- 지역 선택 -->
       <div class="form-group">
-        <label for="city">Select a city:</label>
+        <label for="city"> <strong> Select a city:</strong> </label>
         <select id="city" name="city" required>
           <option value="" disabled selected>-- Choose a city --</option>
           <option value="Seoul">Seoul</option>
@@ -32,8 +32,8 @@
           <option value="Singapore">Singapore</option>
           <option value="Brasilia">Brazilia</option>
           <option value="Cairo">Cairo</option>
-          <option value="Sāo Paulo">Sao Paulo</option>
-          <option value="Delhi">Delhi</option>
+          <option value="Sāo Paulo">Sāo Paulo</option>
+          <option value="New Delhi">New Delhi</option>
         </select>
       </div>
 
@@ -49,6 +49,12 @@
         <label><input type="radio" name="style" value="Formal"> Formal </label>
         <label><input type="radio" name="style" value="Classic"> Classic </label>
         <label><input type="radio" name="style" value="Sporty"> Sporty </label>
+        <label><input type="radio" name="style" value="Comfy"> Comfy </label>
+        <label><input type="radio" name="style" value="Hypebeast"> Hypebeast </label>
+        <label><input type="radio" name="style" value="Tough"> Tough </label>
+        <label><input type="radio" name="style" value="Indie"> Indie </label>
+        <label><input type="radio" name="style" value="Edgy"> Edgy </label>
+        <label><input type="radio" name="style" value="Drippy"> Drippy </label>
       </div>
 
       <!-- 제출 버튼 -->
