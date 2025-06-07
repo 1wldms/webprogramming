@@ -47,6 +47,20 @@ body{
     max-width: 100%;
   }  
 
+.form-group#city-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+#city-group label {
+  margin-bottom: 8px; /* or 10px for a slightly larger gap */
+  }
+
+#city-group {
+    margin-bottom: 24px; /* optional: space below the whole city selector */
+  }
+
 select{
   width:100%; max-width:260px;
   padding:10px 12px;
