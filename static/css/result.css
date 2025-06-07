@@ -342,7 +342,7 @@ header h1 {
 .animated-widget .moon {
     position: absolute;
     top: 20px;
-    right: 20px;
+    right: 10px;
     width: 100px;
     height: 100px;
     background: #fff;
