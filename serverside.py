@@ -44,13 +44,16 @@ def init_db():
                     style TEXT NOT NULL,
                     search_query TEXT NOT NULL,
                     img TEXT NOT NULL,
+                    city TEXT NOT NULL,
+                    weather_temp TEXT NOT NULL,
+                    weather_feels_like TEXT NOT NULL,
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
                 ''')
     conn.commit()
     conn.close()
 
-init_db()
+
 
 
 def get_weather_info(city):
@@ -232,7 +235,7 @@ def mypage():
         
         password, gender = user
         
-        p = "SELECT date, style, search_query, img FROM history WHERE username = ? ORDER BY id DESC;"
+        p = "SELECT date, style, search_query, img, city, weather_temp, weather_feels_like FROM history WHERE username = ? ORDER BY id DESC;"
         cursor.execute(p, (username,))
         history_data = cursor.fetchall()
         
@@ -341,6 +344,8 @@ def result():
     
     # --- Calendar Data Integration ---
     now = datetime.datetime.now()
+    datetime_str = now.strftime("%Y-%m-%d %H:%M")
+    
     current_date_formatted = now.strftime("%B %d, %Y") # e.g., May 29, 2025
     current_month_name = now.strftime("%B") # e.g., May
     current_year = now.year
@@ -351,14 +356,17 @@ def result():
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO history (username, date, style, search_query, img)
-                VALUES (?, ?, ?, ?, ?);
+                INSERT INTO history (username, date, style, search_query, img, city, weather_temp, weather_feels_like)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             ''', (
                 username,
-                now.strftime("%Y-%m-%d"),
+                datetime_str,
                 style,
                 search_query,
-                image_urls[0]
+                image_urls[0],
+                city,
+                temp,
+                feels_like
             ))
 
     return render_template("result.html",
@@ -393,4 +401,5 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(debug=True, port = 8080)
+    init_db()
+    app.run(host='0.0.0.0', port=5050, debug=True)

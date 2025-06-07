@@ -1,8 +1,17 @@
 /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --x: 50%;
+    --y: 50%;
+    --bx: 50%;
+    --by: 50%;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5;
+    background: radial-gradient(circle at var(--x) var(--y),
+                                #f5f7fa 0%, #474747 100%);
     margin: 0;
     padding: 0;
     display: flex;
@@ -477,5 +486,16 @@ header h1 {
     .outfit-card p,
     .image-suggestions-card p {
         font-size: 0.9em;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

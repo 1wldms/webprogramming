@@ -23,11 +23,13 @@
 
     <h2>Style History</h2>
     {% if history_data %}
-        {% for date, style, query, img in history_data %}
+        {% for date, style, query, img, city, weather_temp, weather_feels_like in history_data %}
         <div style="display: flex; align-items: center; margin-bottom: 2em;">
             <div style="flex: 1; padding-right: 1em;">
-                <p><strong>{{ date }}</strong> | Style: {{ style }}</p>
-                <p>Look: {{ query }}</p>
+              <p>📅 {{ date }} | 🎨 {{ style }} 📍 {{ city }}</p>
+              <p>🌡️ {{ weather_temp|int }}°C  (Feels like {{ weather_feels_like|int }}°C)  </p>
+              <br>
+              <p>🔍 {{ query }}</p>
             </div>
             <div style="flex-shrink: 0;">
                 <img src="{{ img }}" width="150" style="border-radius: 8px;">
@@ -58,6 +60,13 @@
       pw.type = isHidden ? "text" : "password";
       iconButton.innerHTML = isHidden ? "‍️" : "👁️";
     }
+
+    document.addEventListener('mousemove', e => {
+    const xPct = (e.clientX / window.innerWidth)  * 100;
+    const yPct = (e.clientY / window.innerHeight) * 100;
+    document.documentElement.style.setProperty('--x', `${xPct}%`);
+    document.documentElement.style.setProperty('--y', `${yPct}%`);
+    });
   </script>
 </body>
 </html>

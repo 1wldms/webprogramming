@@ -10,14 +10,14 @@
 /* full-page layout */
 body {
     background: radial-gradient(circle at var(--x) var(--y),
-                                #f5f7fa 0%, #a8a8a8 100%);
+                                #f5f7fa 0%, #474747 100%);
                                 display:flex; align-items:center; justify-content:center;
                                 height:100vh; margin:0; font-family:'Poppins',sans-serif;
 }
 
 /* signup card */
 .signup-box {
-    background: #fafafa;
+    background: white;
     padding: 50px 40px;
     border-radius: 20px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
@@ -28,17 +28,6 @@ body {
     overflow:hidden;
 }
 
-.signup-box::before {
-    content:"";
-    position:absolute; inset:0;
-    background:radial-gradient(circle at var(--bx) var(--by),
-    rgba(255,255,255,0.75) 0%,
-    rgba(255,255,255,0   ) 40%,
-    rgba(0,0,0,0.07)     65%,
-    rgba(0,0,0,0)        90%);
-    pointer-events:none;
-    transition:background-position .05s;
-}
 
 .signup-box h2 {
     text-align: center;
