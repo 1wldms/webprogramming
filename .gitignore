@@ -1,3 +1,4 @@
 .env
 *.whl
 wheel_files/
+.DS_Store
