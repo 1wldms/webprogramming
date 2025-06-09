@@ -408,5 +408,24 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5050, debug=True)
+@app.route('/init-db')
+def initialize_database():
+    secret = request.args.get("key")
+    if secret != "styleit123":
+        return "접근 불가", 403
+    
+    if os.path.exists(DB_user):
+        return "이미 DB가 존재합니다. 초기화 안 함."
+    
+    try:
+        init_db()
+        return "DB 초기화 완료!"
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
+
+# Render에서는 필요 없음
+# if __name__ == "__main__":
+#     if not os.path.exists(DB_user):
+#         init_db()
+#     app.run(host='0.0.0.0', port=5050, debug=True)
