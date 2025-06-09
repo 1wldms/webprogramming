@@ -19,7 +19,7 @@ weather_api_key = os.getenv("WEATHER_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 CX = os.getenv("CX_ID")
 
-DB_user = '/persistent/user_info.db'
+DB_user = 'user_info.db'
 
 def init_db():
     if os.path.exists(DB_user):
@@ -420,6 +420,7 @@ def view_users():
         return "<br>".join([f"👤 {u[0]} ({u[1]})" for u in users])
     except Exception as e:
         return f"오류 발생: {str(e)}"
+
 
 @app.route('/init-db')
 def initialize_database():
