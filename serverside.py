@@ -47,6 +47,8 @@ def init_db():
                     city TEXT NOT NULL,
                     weather_temp TEXT NOT NULL,
                     weather_feels_like TEXT NOT NULL,
+                    rain_status TEXT NOT NULL,
+                    wind_status TEXT NOT NULL,
                     FOREIGN KEY(username) REFERENCES users(username)
                 );
                 ''')
@@ -76,7 +78,7 @@ def parse_weather(weather_data, city):
     feels_like = weather_data['main']['feels_like']
     temp_max = weather_data['main']['temp_max']
     temp_min = weather_data['main']['temp_min']
-    clouds  = weather_data['clouds']['all']
+    clouds = weather_data['clouds']['all']
     humidity = weather_data['main']['humidity']
     wind_speed = weather_data['wind']['speed']
     description = weather_data['weather'][0]['description']
@@ -115,8 +117,15 @@ def parse_weather(weather_data, city):
     if notes:
         weather_info += "\n\nWeather Advisory:\n" + "\n".join(notes)
 
-    return weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description
+    rain = 'rain' in description.lower()
+    windy = float(wind_speed) >= 5.5
 
+    rain_status = "🌧️ Rainy" if rain else "☀️ No Rain"
+    wind_status_txt = "💨 Windy" if windy else "🍃 Calm"
+
+    return (weather_info, temp, feels_like, temp_max, temp_min,
+        cloud_status, humidity, wind_status, description, wind_speed,
+        rain_status, wind_status_txt)
 def get_pinterest_images(query, google_api_key, cx_id):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -235,7 +244,7 @@ def mypage():
         
         password, gender = user
         
-        p = "SELECT date, style, search_query, img, city, weather_temp, weather_feels_like FROM history WHERE username = ? ORDER BY id DESC;"
+        p = "SELECT date, style, search_query, img, city, weather_temp, weather_feels_like, rain_status, wind_status FROM history WHERE username = ? ORDER BY id DESC;"
         cursor.execute(p, (username,))
         history_data = cursor.fetchall()
         
@@ -269,8 +278,9 @@ def result():
         flash("Failed to fetch weather data.")
         return redirect(url_for('weather_style'))
 
-    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description = parse_weather(weather_data, city)
-    
+    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt = parse_weather(weather_data, city)
+
+
     #gpt prompt 보내기
     try:
 
@@ -356,18 +366,16 @@ def result():
         with sqlite3.connect(DB_user) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO history (username, date, style, search_query, img, city, weather_temp, weather_feels_like)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            ''', (
-                username,
-                datetime_str,
-                style,
-                search_query,
-                image_urls[0],
-                city,
-                temp,
-                feels_like
-            ))
+                        INSERT INTO history (
+                            username, date, style, search_query, img, city,
+                            weather_temp, weather_feels_like, rain_status, wind_status
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                        ''', (
+                        username, datetime_str, style, search_query, image_urls[0], city, 
+                        temp, feels_like, rain_status, wind_status_txt
+                        ))
+
 
     return render_template("result.html",
                             city=city,
