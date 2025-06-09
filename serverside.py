@@ -19,8 +19,7 @@ weather_api_key = os.getenv("WEATHER_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 CX = os.getenv("CX_ID")
 
-
-DB_user = 'user_info.db'
+DB_user = '/persistent/user_info.db'
 
 def init_db():
     if os.path.exists(DB_user):
@@ -422,20 +421,16 @@ def view_users():
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
-# @app.route('/init-db')
-# def initialize_database():
-#     secret = request.args.get("key")
-#     if secret != "styleit123":
-#         return "접근 불가", 403
-    
-#     if os.path.exists(DB_user):
-#         return "이미 DB가 존재합니다. 초기화 안 함."
-    
-#     try:
-#         init_db()
-#         return "DB 초기화 완료!"
-#     except Exception as e:
-#         return f"오류 발생: {str(e)}"
+@app.route('/init-db')
+def initialize_database():
+    if os.path.exists(DB_user):
+        return "❗ 이미 DB가 존재합니다. 초기화 안 함."
+
+    try:
+        init_db()
+        return "✅ DB 초기화 완료!"
+    except Exception as e:
+        return f"❌ 오류 발생: {str(e)}"
 
 
 #Render에서는 필요 없음
