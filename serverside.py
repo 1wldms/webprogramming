@@ -408,6 +408,20 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+@app.route('/view-users')
+def view_users():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_123":  
+        return "접근 불가: 인증 키가 필요합니다", 403
+    try:
+        with sqlite3.connect(DB_user) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT username, gender FROM users;")
+            users = cursor.fetchall()
+        return "<br>".join([f"👤 {u[0]} ({u[1]})" for u in users])
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
 # @app.route('/init-db')
 # def initialize_database():
 #     secret = request.args.get("key")
