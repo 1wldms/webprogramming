@@ -7,7 +7,7 @@ import openai
 import traceback
 from dotenv import load_dotenv
 import re
-import datetime # Import datetime
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -409,5 +409,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    init_db()
     app.run(host='0.0.0.0', port=5050, debug=True)
