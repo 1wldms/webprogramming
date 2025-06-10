@@ -57,6 +57,15 @@ def init_db():
             FOREIGN KEY(username) REFERENCES users(username)
         );
         ''')
+        
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS feedback (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        ''')
 
         conn.commit()
         cursor.close()
@@ -466,9 +475,29 @@ def reset_db():
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS history;")
         cursor.execute("DROP TABLE IF EXISTS users;")
+        cursor.execute("DROP TABLE IF EXISTS feedback;")
         conn.commit()
         cursor.close()
         conn.close()
         return "✅ 모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
     except Exception as e:
-        return f"❌ 오류: {str(e)}"
+        return f"오류: {str(e)}"
+
+@app.route('/view-feedback')
+def view_feedback():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":
+        return "접근 거부", 403
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, content, created_at FROM feedback ORDER BY created_at DESC;")
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    result = "<h2>Feedback</h2><ul>"
+    for name, content, created_at in data:
+        result += f"<li><strong>{name}</strong> ({created_at}): <br>{content}</li><br>"
+    result += "</ul>"
+    return result
