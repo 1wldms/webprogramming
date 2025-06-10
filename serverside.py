@@ -515,8 +515,4 @@ def view_feedback():
     cursor.close()
     conn.close()
 
-    result = "<h2>Feedback</h2><ul>"
-    for name, content, created_at in data:
-        result += f"<li><strong>{name}</strong> ({created_at}): <br>{content}</li><br>"
-    result += "</ul>"
-    return result
+    return render_template("feedback_list.html", feedbacks=data)
