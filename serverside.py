@@ -448,6 +448,22 @@ def view_users():
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
+@app.route('/reset-db')
+def reset_db():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":
+        return "접근 거부", 403
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DROP TABLE IF EXISTS history;")
+        cursor.execute("DROP TABLE IF EXISTS users;")
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return "✅ 모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
+    except Exception as e:
+        return f"❌ 오류: {str(e)}"
 
 #Render에서는 필요 없음
 # if __name__ == "__main__":
