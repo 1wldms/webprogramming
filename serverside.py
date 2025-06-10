@@ -444,10 +444,18 @@ def view_users():
         users = cursor.fetchall()
         cursor.close()
         conn.close()
-        return "<br>".join([f"Joined:{u[2].strftime('%Y-%m-%d %H:%M')} Name: {u[0]} Gender:{u[1]}" for u in users])
+
+        def format_date(t):
+            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
+
+        return "<br>".join([
+            f"Joined: {format_date(u[2])} |  Name: {u[0]} |  Gender: {u[1]}"
+            for u in users
+        ])
     except Exception as e:
         return f"오류 발생: {str(e)}"
-
+    
+    
 @app.route('/reset-db')
 def reset_db():
     secret = request.args.get("key")
