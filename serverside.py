@@ -36,7 +36,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
             password TEXT NOT NULL,
-            gender TEXT NOT NULL
+            gender TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         ''')
 
@@ -443,7 +444,7 @@ def view_users():
         users = cursor.fetchall()
         cursor.close()
         conn.close()
-        return "<br>".join([f"👤 {u[0]} ({u[1]})" for u in users])
+        return "<br>".join([f"가입일:{u[2].strftime('%Y-%m-%d %H:%M')} 이름: {u[0]} 성별:({u[1]})" for u in users])
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
