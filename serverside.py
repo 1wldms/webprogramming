@@ -472,9 +472,3 @@ def reset_db():
         return "✅ 모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
     except Exception as e:
         return f"❌ 오류: {str(e)}"
-
-#Render에서는 필요 없음
-# if __name__ == "__main__":
-#     if not os.path.exists(DB_user):
-#         init_db()
-#     app.run(host='0.0.0.0', port=5050, debug=True)
