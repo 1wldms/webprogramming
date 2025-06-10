@@ -483,22 +483,23 @@ def reset_db():
     except Exception as e:
         return f"오류: {str(e)}"
 
+
 @app.route('/submit-feedback', methods=['POST'])
 def submit_feedback():
     name = request.form.get('name')
     content = request.form.get('content')
 
     if not name or not content:
-        return "Please enter both your name and content.", 400
+        return "lease enter both your name and content.", 400
 
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO feedback (name, content) VALUES (%s, %s);", (name, content))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return "Thank you! Your feedback is submitted"
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO feedback (name, content) VALUES (%s, %s);", (name, content))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return "Thank you! Your feedback is submitted"
 
 
 @app.route('/view-feedback')
