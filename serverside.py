@@ -440,7 +440,7 @@ def view_users():
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT username, gender FROM users;")
+        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
         users = cursor.fetchall()
         cursor.close()
         conn.close()
