@@ -444,7 +444,7 @@ def view_users():
         users = cursor.fetchall()
         cursor.close()
         conn.close()
-        return "<br>".join([f"가입일:{u[2].strftime('%Y-%m-%d %H:%M')} 이름: {u[0]} 성별:({u[1]})" for u in users])
+        return "<br>".join([f"Joined:{u[2].strftime('%Y-%m-%d %H:%M')} Name: {u[0]} Gender:{u[1]}" for u in users])
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
