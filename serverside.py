@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
+#import sqlite3
 import os
 import requests
 import json
@@ -7,7 +7,7 @@ import openai
 import traceback
 from dotenv import load_dotenv
 import re
-import datetime # Import datetime
+import datetime
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -19,41 +19,73 @@ weather_api_key = os.getenv("WEATHER_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 CX = os.getenv("CX_ID")
 
+#DB_user = 'user_info.db'
 
-DB_user = 'user_info.db'
+import psycopg2
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_connection():
+    return psycopg2.connect(DATABASE_URL)
 
 def init_db():
-    if os.path.exists(DB_user):
-        os.remove(DB_user)
-    
-    conn = sqlite3.connect(DB_user)
-    cursor = conn.cursor()
-    cursor.execute('''
-                CREATE TABLE users(
-                    username TEXT PRIMARY KEY,
-                    password TEXT NOT NULL,
-                    gender TEXT NOT NULL
-                );
-                ''')
-    
-    cursor.execute('''
-                CREATE TABLE history(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL,
-                    date TEXT NOT NULL,
-                    style TEXT NOT NULL,
-                    search_query TEXT NOT NULL,
-                    img TEXT NOT NULL,
-                    city TEXT NOT NULL,
-                    weather_temp TEXT NOT NULL,
-                    weather_feels_like TEXT NOT NULL,
-                    FOREIGN KEY(username) REFERENCES users(username)
-                );
-                ''')
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        ''')
+
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS history (
+            id SERIAL PRIMARY KEY,
+            username TEXT NOT NULL,
+            date TEXT NOT NULL,
+            style TEXT NOT NULL,
+            search_query TEXT NOT NULL,
+            img TEXT NOT NULL,
+            city TEXT NOT NULL,
+            weather_temp TEXT NOT NULL,
+            weather_feels_like TEXT NOT NULL,
+            rain_status TEXT NOT NULL,
+            wind_status TEXT NOT NULL,
+            FOREIGN KEY(username) REFERENCES users(username)
+        );
+        ''')
+        
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS feedback (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        ''')
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("✅ PostgreSQL 테이블 생성 완료")
+    except Exception as e:
+        print(f" 오류 발생: {str(e)}")
 
 
+@app.route('/init-db')
+def init_db_route():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025": 
+        return "접근 거부: 인증 키가 잘못되었습니다", 403
+
+    try:
+        init_db()
+        return "✅ PostgreSQL 테이블 생성 완료!"
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
 
 
 def get_weather_info(city):
@@ -76,7 +108,7 @@ def parse_weather(weather_data, city):
     feels_like = weather_data['main']['feels_like']
     temp_max = weather_data['main']['temp_max']
     temp_min = weather_data['main']['temp_min']
-    clouds  = weather_data['clouds']['all']
+    clouds = weather_data['clouds']['all']
     humidity = weather_data['main']['humidity']
     wind_speed = weather_data['wind']['speed']
     description = weather_data['weather'][0]['description']
@@ -115,8 +147,15 @@ def parse_weather(weather_data, city):
     if notes:
         weather_info += "\n\nWeather Advisory:\n" + "\n".join(notes)
 
-    return weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description
+    rain = 'rain' in description.lower()
+    windy = float(wind_speed) >= 5.5
 
+    rain_status = "🌧️ Rainy" if rain else "☀️ No Rain"
+    wind_status_txt = "💨 Windy" if windy else "🍃 Calm"
+
+    return (weather_info, temp, feels_like, temp_max, temp_min,
+        cloud_status, humidity, wind_status, description, wind_speed,
+        rain_status, wind_status_txt)
 def get_pinterest_images(query, google_api_key, cx_id):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -177,19 +216,22 @@ def signup():
         password = request.form['pwd']
         gender = request.form['gender']
         
-        with sqlite3.connect(DB_user) as conn:
-            cursor = conn.cursor()
-            q = "SELECT * FROM users WHERE username = ?"
-            cursor.execute(q,(username,))
-            user_existing = cursor.fetchone()
-        
-            if user_existing:
-                flash('Existing ID')
-                return render_template('signup.html')
-            else:
-                q = "INSERT INTO users (username,password,gender) VALUES (?,?,?);"
-                cursor.execute(q,(username,password,gender))
-                return redirect(url_for('login'))
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        user_existing = cursor.fetchone()
+
+        if user_existing:
+            flash('Existing ID')
+            cursor.close()
+            conn.close()
+            return render_template('signup.html')
+        else:
+            cursor.execute("INSERT INTO users (username, password, gender) VALUES (%s, %s, %s);",(username, password, gender))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return redirect(url_for('login'))
         
     return render_template('signup.html')
 
@@ -199,18 +241,21 @@ def login():
         username = request.form['username']
         password = request.form['pwd']
         
-        with sqlite3.connect(DB_user) as conn:
-            cursor = conn.cursor()
-            q = "SELECT password FROM users WHERE username = ?;"
-            cursor.execute(q, (username,))
-            user = cursor.fetchone()
-        
-            if user and user[0] == password:
-                session['username'] = username
-                return redirect(url_for('weather_style'))
-            else:
-                flash("Please check your username of password again.")
-                return redirect(url_for('login'))
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT password FROM users WHERE username = %s;", (username,))
+        user = cursor.fetchone()
+
+        if user and user[0] == password:
+            session['username'] = username
+            cursor.close()
+            conn.close()
+            return redirect(url_for('weather_style'))
+        else:
+            flash("Please check your username or password again.")
+            cursor.close()
+            conn.close()
+            return redirect(url_for('login'))
 
     return render_template('login.html')
 
@@ -219,61 +264,69 @@ def mypage():
     if 'username' not in session:
         flash('Please login.')
         return redirect(url_for('login'))
-    
+
     username = session['username']
-    
-    with sqlite3.connect(DB_user) as conn:
-        cursor = conn.cursor()
-        
-        q = "SELECT password, gender FROM users WHERE username = ?;"
-        cursor.execute(q, (username,))
-        user = cursor.fetchone()
-        
-        if not user:
-            flash('Cannot find user info.')
-            return redirect(url_for('signup'))
-        
-        password, gender = user
-        
-        p = "SELECT date, style, search_query, img, city, weather_temp, weather_feels_like FROM history WHERE username = ? ORDER BY id DESC;"
-        cursor.execute(p, (username,))
-        history_data = cursor.fetchall()
-        
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT password, gender FROM users WHERE username = %s;", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        flash('Cannot find user info.')
+        cursor.close()
+        conn.close()
+        return redirect(url_for('signup'))
+
+    password, gender = user
+
+    cursor.execute("""
+        SELECT date, style, search_query, img, city, weather_temp, weather_feels_like, rain_status, wind_status
+        FROM history 
+        WHERE username = %s 
+        ORDER BY id DESC;
+    """, (username,))
+    history_data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
     return render_template(
         "mypage.html",
-        username = username,
-        password = password,
-        gender = gender,
-        history_data = history_data,
+        username=username,
+        password=password,
+        gender=gender,
+        history_data=history_data,
     )
+
 
 @app.route('/Style-It', methods=["GET"])
 def weather_style():
     return render_template("weather_style.html")
 
 
-@app.route('/result', methods=["GET","POST"])
+@app.route('/result', methods=["GET", "POST"])
 def result():
     city = request.form["city"]
     style = request.form["style"]
     
     username = session.get('username')
-    with sqlite3.connect(DB_user) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT gender FROM users WHERE username = ?;", (username,))
-        result = cursor.fetchone()
-        gender = result[0] if result else "unspecified"
-    
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT gender FROM users WHERE username = %s;", (username,))
+    result = cursor.fetchone()
+    gender = result[0] if result else "unspecified"
+
     weather_data = get_weather_info(city)
     if not weather_data:
         flash("Failed to fetch weather data.")
         return redirect(url_for('weather_style'))
 
-    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description = parse_weather(weather_data, city)
-    
-    #gpt prompt 보내기
-    try:
+    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt = parse_weather(weather_data, city)
 
+    try:
         prompt = f"""You are a fashion coordinator who understands weather very well.
     {weather_info}
     I am a {gender} living in {city}, and I prefer a {style} style.
@@ -287,33 +340,26 @@ def result():
     - Shoes: ...
     - Accessories: ...
     - Additional Consideration: ...
-    
-    
+
     ⚠️ Important: For each clothing item (Outerwear, Top, Bottom, etc.), respond with a **short, keyword-style description** that can be used as a Pinterest search term. Avoid long sentences or explanations. For example:
     - Outerwear: trench coat
     - Top: cotton t-shirt
     - Shoes: white sneakers
-    
+
     Please only output one or two words per category. Your answer will be used as image search terms.
     Avoid adjectives like 'comfortable', 'breathable', etc. Just provide item names.
     """
-    
         response = client.chat.completions.create(
             model="gpt-4-turbo",
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
+            messages=[{"role": "user", "content": prompt}],
             max_tokens=300,
             temperature=0.7,
         )
-
         gpt_reply = response.choices[0].message.content
-        
     except Exception as e:
         traceback.print_exc()
         gpt_reply = f"GPT ERROR: {str(e)}"
 
-    
     outfit_dict = reply_from_gpt(gpt_reply)
 
     emoji_map = {
@@ -325,49 +371,43 @@ def result():
         "Additional Consideration": "💡"}
 
     style_emoji_map = {
-    "casual": "👖",       
-    "minimal": "👕",     
-    "street": "👟",       
-    "chic": "🕶️",        
-    "girlish": "👗",     
-    "vintage": "🧥",      
-    "formal": "👔",      
-    "classic": "🧑‍💼",    
-    "sporty": "🎽"}
+        "casual": "👖",
+        "minimal": "👕",
+        "street": "👟",
+        "chic": "🕶️",
+        "girlish": "👗",
+        "vintage": "🧥",
+        "formal": "👔",
+        "classic": "🧑‍💼",
+        "sporty": "🎽"}
     style_icon = style_emoji_map.get(style.lower(), "🧍")
-    
-    
+
     search_query = build_search_query(outfit_dict, gender, style)
     image_urls = get_pinterest_images(search_query, GOOGLE_API_KEY, CX)
-
     search_url = f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '+')}"
-    
-    # --- Calendar Data Integration ---
+
     now = datetime.datetime.now()
     datetime_str = now.strftime("%Y-%m-%d %H:%M")
-    
-    current_date_formatted = now.strftime("%B %d, %Y") # e.g., May 29, 2025
-    current_month_name = now.strftime("%B") # e.g., May
+    current_date_formatted = now.strftime("%B %d, %Y")
+    current_month_name = now.strftime("%B")
     current_year = now.year
-    current_day = now.day # Day of the month (e.g., 29)
-    # --- End Calendar Data Integration ---
+    current_day = now.day
 
     if username and image_urls:
-        with sqlite3.connect(DB_user) as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO history (username, date, style, search_query, img, city, weather_temp, weather_feels_like)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            ''', (
-                username,
-                datetime_str,
-                style,
-                search_query,
-                image_urls[0],
-                city,
-                temp,
-                feels_like
-            ))
+        cursor.execute('''
+            INSERT INTO history (
+                username, date, style, search_query, img, city,
+                weather_temp, weather_feels_like, rain_status, wind_status
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        ''', (
+            username, datetime_str, style, search_query, image_urls[0], city,
+            temp, feels_like, rain_status, wind_status_txt
+        ))
+        conn.commit()
+
+    cursor.close()
+    conn.close()
 
     return render_template("result.html",
                             city=city,
@@ -387,12 +427,11 @@ def result():
                             search_url=search_url,
                             image_urls=image_urls,
                             search_query=search_query,
-                            # New calendar data
                             current_date=current_date_formatted,
                             current_month_name=current_month_name,
                             current_year=current_year,
                             current_day=current_day
-)
+                            )
 
 
 @app.route('/logout')
@@ -400,6 +439,80 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-if __name__ == "__main__":
-    init_db()
-    app.run(host='0.0.0.0', port=5050, debug=True)
+
+@app.route('/view-users')
+def view_users():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":  
+        return "접근 불가: 인증 키가 필요합니다", 403
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        def format_date(t):
+            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
+
+        return "<br>".join([
+            f"Joined: {format_date(u[2])} |  Name: {u[0]} |  Gender: {u[1]}"
+            for u in users
+        ])
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
+
+@app.route('/reset-db')
+def reset_db():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":
+        return "접근 거부", 403
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("DROP TABLE IF EXISTS history;")
+        cursor.execute("DROP TABLE IF EXISTS users;")
+        cursor.execute("DROP TABLE IF EXISTS feedback;")
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return "✅ 모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
+    except Exception as e:
+        return f"오류: {str(e)}"
+
+
+@app.route('/submit-feedback', methods=['POST'])
+def submit_feedback():
+    name = request.form.get('name')
+    content = request.form.get('content')
+
+    if not name or not content:
+        return "lease enter both your name and content.", 400
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO feedback (name, content) VALUES (%s, %s);", (name, content))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return "Thank you! Your feedback is submitted"
+
+
+@app.route('/view-feedback')
+def view_feedback():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":
+        return "접근 거부", 403
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, content, created_at FROM feedback ORDER BY created_at DESC;")
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("feedback_list.html", feedbacks=data)

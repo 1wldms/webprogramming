@@ -202,15 +202,12 @@ header h1 {
 }
 
 .card.weather-widget-card {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: nowrap;
-  height: auto;            /* ✅ make sure this is set */
-  min-height: unset;       /* ✅ if you had a min-height before, unset it */
-  overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: nowrap; /* 🔁 force it to stay side-by-side */
 }
 
 .weather-card {
@@ -392,24 +389,23 @@ header h1 {
 
 /* === Animated Widget === */
 .animated-widget {
-  width: 320px;
-  transform: none;
-  transform-origin: top left;
-  position: relative;
-  height: auto;            /* ✅ Let it shrink to fit */
-  display: inline-block;
-}
+    width: 320px;
+    transform: scale(0.8);
+    transform-origin: top left;
+    position: relative;
+    height: auto;            /* ✅ Let it shrink to fit */
+    display: inline-block;
+    }
 
 .animated-widget-wrapper {
-  flex: 0 0 360px;         /* ✅ Reserve enough space for full widget */
-  overflow: visible;
-  display: flex;
-  justify-content: flex-start;
-  align-self: flex-start;
-  box-sizing: border-box;
-  margin-top: 11px;
-  padding-left: 30px;
-  margin-left: 20px;
+    flex: 0 0 auto;
+    max-width: 350px;        /* adjust as needed */
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;  /* 🔁 moves widget more LEFT */
+    align-self: flex-start;
+    padding-left: 10px;      /* optional: more left shift */
+    box-sizing: border-box;
 }
 
 .animated-widget .frame {

@@ -25,6 +25,28 @@
         {% endif %}
   </div>
 
+
+  <button id="feedback-btn">💬 Feedback</button>
+
+  <div id="feedback-modal" class="hidden">
+    <form id="feedback-form">
+      <h2 style="margin-bottom: 20px;">💌 Feedback</h2>
+  
+      <div class="form-group">
+        <label for="feedback-name">Your Name</label>
+        <input type="text" id="feedback-name" name="name" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="feedback-content">Your Feedback</label>
+        <textarea id="feedback-content" name="content" rows="4" required></textarea>
+      </div>
+  
+      <button type="submit" class="btn active">Submit</button>
+      <button type="button" class="btn" onclick="closeFeedback()">Close</button>
+    </form>
+  </div>
+
   <!-- interactive gradient follow-mouse -->
 <script>
   document.addEventListener('mousemove', e => {
@@ -33,6 +55,27 @@
     document.documentElement.style.setProperty('--x', `${xPct}%`);
     document.documentElement.style.setProperty('--y', `${yPct}%`);
   });
+  document.getElementById("feedback-btn").onclick = function () {
+    document.getElementById("feedback-modal").classList.remove("hidden");
+  };
+  
+  function closeFeedback() {
+    document.getElementById("feedback-modal").classList.add("hidden");
+  }
+  
+  document.getElementById("feedback-form").onsubmit = async function (e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+  
+    const res = await fetch("/submit-feedback", {
+      method: "POST",
+      body: formData
+    });
+  
+    const text = await res.text();
+    alert(text);
+    closeFeedback();
+  };
 </script>
 
 </body>
