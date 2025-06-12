@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-:root {
-    --x: 50%;
-    --y: 50%;
-    --bx: 50%;
-    --by: 50%;
-}
 
 body {
     background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
