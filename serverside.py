@@ -259,7 +259,7 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/intro')
+@app.route('/intropage')
 def intro():
     return render_template('intropage.html')
 
