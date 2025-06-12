@@ -250,7 +250,7 @@ def login():
             session['username'] = username
             cursor.close()
             conn.close()
-            return redirect(url_for('weather_style'))
+            return redirect(url_for('intropage'))
         else:
             flash("Please check your username or password again.")
             cursor.close()
@@ -258,6 +258,11 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
+@app.route('/intro')
+def intro():
+    return render_template('intropage.html')
+
 
 @app.route('/mypage')
 def mypage():
