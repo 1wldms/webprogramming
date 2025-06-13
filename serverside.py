@@ -305,11 +305,12 @@ def mypage():
         history_data=history_data,
     )
 
-
 @app.route('/Style-It', methods=["GET"])
 def weather_style():
-    return render_template("weather_style.html")
-
+    df = pd.read_csv('cities.csv', header=None)  
+    df.columns = ['City'] 
+    city_list = sorted(df['City'].dropna().unique())
+    return render_template('weather_style.html', cities=city_list)
 
 @app.route('/result', methods=["GET", "POST"])
 def result():
