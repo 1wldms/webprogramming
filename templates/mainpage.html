@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
 </head>
 
 <body>
@@ -19,6 +20,7 @@
       <div class="btn-group">
         {% if isLogin %}
           <a href="{{ url_for('logout') }}" class="btn">Log out</a>
+          <a href="{{ url_for('intropage') }}" class="btn">Home page</a>
         {% else %}
           <a href="{{ url_for('login') }}" class="btn">Log in</a>
           <a href="{{ url_for('signup') }}" class="btn">Sign up</a>
@@ -47,6 +49,7 @@
     </form>
   </div>
 
+  <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
 
 </body>
 </html>

@@ -7,7 +7,11 @@ import openai
 import traceback
 from dotenv import load_dotenv
 import re
-import datetime
+import datetime 
+import pytz
+from geopy.geocoders import Nominatim
+from timezonefinder import TimezoneFinder
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -471,31 +475,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/view-users')
-def view_users():
-    secret = request.args.get("key")
-    if secret != "styleit_admin_2025":  
-        return "접근 불가: 인증 키가 필요합니다", 403
-
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
-        users = cursor.fetchall()
-        cursor.close()
-        conn.close()
-
-        def format_date(t):
-            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
-
-        return "<br>".join([
-            f"Joined: {format_date(u[2])} |  Name: {u[0]} |  Gender: {u[1]}"
-            for u in users
-        ])
-    except Exception as e:
-        return f"오류 발생: {str(e)}"
-
-
 @app.route('/reset-db')
 def reset_db():
     secret = request.args.get("key")
@@ -515,13 +494,34 @@ def reset_db():
         return f"오류: {str(e)}"
 
 
+@app.route('/view-users')
+def view_users():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":  
+        return "접근 불가: 인증 키가 필요합니다", 403
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        def format_date(t):
+            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
+
+        return  render_template("view_users.html", users=users)
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
 @app.route('/submit-feedback', methods=['POST'])
 def submit_feedback():
     name = request.form.get('name')
     content = request.form.get('content')
 
     if not name or not content:
-        return "lease enter both your name and content.", 400
+        return "Please enter both your name and content.", 400
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -531,7 +531,6 @@ def submit_feedback():
     conn.close()
 
     return "Thank you! Your feedback is submitted"
-
 
 @app.route('/view-feedback')
 def view_feedback():
