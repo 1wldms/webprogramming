@@ -70,7 +70,7 @@ def init_db():
         conn.commit()
         cursor.close()
         conn.close()
-        print("✅ PostgreSQL 테이블 생성 완료")
+        print("PostgreSQL 테이블 생성 완료")
     except Exception as e:
         print(f" 오류 발생: {str(e)}")
 
@@ -83,7 +83,7 @@ def init_db_route():
 
     try:
         init_db()
-        return "✅ PostgreSQL 테이블 생성 완료!"
+        return "PostgreSQL 테이블 생성 완료!"
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
@@ -259,7 +259,7 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/intropage')
+@app.route('/intropage', methods=["GET"])
 def intropage():
     return render_template('intropage.html')
 
