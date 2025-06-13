@@ -350,7 +350,7 @@ def result():
         flash("Failed to fetch weather data.")
         return redirect(url_for('weather_style'))
 
-    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt = parse_weather(weather_data, city)
+    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt, is_raining = parse_weather(weather_data, city)
     
     tz_name = get_timezone_from_city(city)
     tz = pytz.timezone(tz_name)
@@ -394,26 +394,6 @@ def result():
 
     outfit_dict = reply_from_gpt(gpt_reply)
 
-    emoji_map = {
-        "Outerwear": "🧥",
-        "Top": "👕",
-        "Bottom": "👖",
-        "Shoes": "👟",
-        "Accessories": "👜",
-        "Additional Consideration": "💡"}
-
-    style_emoji_map = {
-        "casual": "👖",
-        "minimal": "👕",
-        "street": "👟",
-        "chic": "🕶️",
-        "girlish": "👗",
-        "vintage": "🧥",
-        "formal": "👔",
-        "classic": "🧑‍💼",
-        "sporty": "🎽"}
-    style_icon = style_emoji_map.get(style.lower(), "🧍")
-
     search_query = build_search_query(outfit_dict, gender, style)
     image_urls = get_pinterest_images(search_query, GOOGLE_API_KEY, CX)
     search_url = f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '+')}"
@@ -444,7 +424,6 @@ def result():
     return render_template("result.html",
                             city=city,
                             style=style,
-                            style_icon=style_icon,
                             temp=temp,
                             feels_like=feels_like,
                             temp_max=temp_max,
