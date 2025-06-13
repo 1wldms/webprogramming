@@ -171,7 +171,7 @@ def parse_weather(weather_data, city):
 
     return (weather_info, temp, feels_like, temp_max, temp_min,
         cloud_status, humidity, wind_status, description, wind_speed,
-        rain_status, wind_status_txt)
+        rain_status, wind_status_txt, rain)
 
 def is_night_time(hour):
     return hour < 6 or hour >= 18
