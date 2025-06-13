@@ -87,6 +87,18 @@ def init_db_route():
     except Exception as e:
         return f"오류 발생: {str(e)}"
 
+def get_timezone_from_city(city_name):
+    try:
+        geolocator = Nominatim(user_agent="styleit-app")
+        location = geolocator.geocode(city_name)
+        if location:
+            tf = TimezoneFinder()
+            tz_name = tf.timezone_at(lng=location.longitude, lat=location.latitude)
+            return tz_name
+    except Exception as e:
+        print(f"Error finding timezone for {city_name}: {e}")
+    return "UTC"  # fallback
+
 
 def get_weather_info(city):
     lang = 'eng'
@@ -156,6 +168,10 @@ def parse_weather(weather_data, city):
     return (weather_info, temp, feels_like, temp_max, temp_min,
         cloud_status, humidity, wind_status, description, wind_speed,
         rain_status, wind_status_txt)
+
+def is_night_time(hour):
+    return hour < 6 or hour >= 18
+
 def get_pinterest_images(query, google_api_key, cx_id):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -235,6 +251,10 @@ def signup():
         
     return render_template('signup.html')
 
+@app.route('/homepage', methods=["GET"])
+def homepage():
+    return render_template('homepage.html')
+
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -258,10 +278,6 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
-
-@app.route('/homepage', methods=["GET"])
-def homepage():
-    return render_template('homepage.html')
 
 
 @app.route('/mypage')
@@ -331,7 +347,13 @@ def result():
         return redirect(url_for('weather_style'))
 
     weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt = parse_weather(weather_data, city)
-
+    
+    tz_name = get_timezone_from_city(city)
+    tz = pytz.timezone(tz_name)
+    now = datetime.datetime.now(tz)
+    hour = now.hour
+    
+    #gpt prompt 보내기
     try:
         prompt = f"""You are a fashion coordinator who understands weather very well.
     {weather_info}
@@ -436,7 +458,10 @@ def result():
                             current_date=current_date_formatted,
                             current_month_name=current_month_name,
                             current_year=current_year,
-                            current_day=current_day
+                            current_day=current_day,
+                            is_night=is_night_time(hour),
+                            is_raining=is_raining,
+                            hour=hour
                             )
 
 
