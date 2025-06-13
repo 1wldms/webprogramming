@@ -250,7 +250,7 @@ def login():
             session['username'] = username
             cursor.close()
             conn.close()
-            return redirect(url_for('intropage'))
+            return redirect(url_for('homepage'))
         else:
             flash("Please check your username or password again.")
             cursor.close()
@@ -259,9 +259,9 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/intropage', methods=["GET"])
-def intropage():
-    return render_template('intropage.html')
+@app.route('/homepage', methods=["GET"])
+def homepage():
+    return render_template('homepage.html')
 
 
 @app.route('/mypage')
