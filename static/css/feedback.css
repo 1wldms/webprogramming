@@ -48,7 +48,7 @@
     box-sizing: border-box;
 }
 
-feedback_btn {
+.feedback_btn {
     background-color: #000;
     color: #fff;
     padding: 12px 28px;
