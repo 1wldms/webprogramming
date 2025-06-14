@@ -10,8 +10,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at var(--x) var(--y),
-                                #f5f7fa 0%, #474747 100%);
+    background: radial-gradient(circle at var(--x) var(--y), #f5f7fa 0%, #474747 100%);
     margin: 0;
     padding: 0;
     display: flex;
@@ -22,7 +21,7 @@ body {
 }
 
 .container {
-    background-color: #ffffff;
+    background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 25px;
@@ -61,14 +60,14 @@ header h1 {
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    background-color: #e0e0e0;
+    background: #e0e0e0;
     color: #555;
     margin-left: auto;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .my-page-button:hover {
-    background-color: #d0d0d0;
+    background: #d0d0d0;
 }
 
 .info-calendar-container {
@@ -79,14 +78,13 @@ header h1 {
     justify-content: center;
 }
 
-/* === UPDATED: INFO BOX STYLING === */
 .info-box,
 .calendar-box {
     flex: 1;
     min-width: 280px;
     padding: 25px;
     border-radius: 12px;
-    background-color: #fff;
+    background: #fff;
     border: 1px solid #e0e0e0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
@@ -97,13 +95,10 @@ header h1 {
 .calendar-box h2 {
     font-size: 24px;
     color: #333;
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
     padding: 14px;
-    text-align: center;
-    margin: 0 auto;
+    margin: 0 auto 20px;
     min-width: 280px;
+    text-align: center;
 }
 
 .info-box p {
@@ -118,11 +113,7 @@ header h1 {
 
 .info-box p strong {
     color: #333;
-    display: inline;
-    text-align: center;
 }
-
-/* === END INFO BOX STYLING === */
 
 #mini-calendar {
     text-align: center;
@@ -135,24 +126,19 @@ header h1 {
     margin-bottom: 10px;
 }
 
-.calendar-days-of-week {
+.calendar-days-of-week,
+.calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-days-of-week {
     font-weight: bold;
     color: #777;
     margin-bottom: 5px;
 }
 
-.calendar-days-of-week span {
-    padding: 5px 0;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-}
-
+.calendar-days-of-week span,
 .calendar-day,
 .empty-cell {
     padding: 8px 5px;
@@ -161,83 +147,68 @@ header h1 {
     justify-content: center;
     align-items: center;
     font-size: 14px;
+}
+
+.calendar-day {
     color: #444;
 }
 
 .empty-cell {
-    background-color: #f9f9f9;
+    background: #f9f9f9;
     visibility: hidden;
 }
 
 .calendar-day:hover {
-    background-color: #e6e6e6;
+    background: #e6e6e6;
     cursor: pointer;
 }
 
 .current-day {
-    background-color: #a0a0a0;
-    color: white;
+    background: #a0a0a0;
+    color: #fff;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .current-day:hover {
-    background-color: #888888;
+    background: #888;
 }
 
 .card {
-    background-color: #ffffff;
+    background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 25px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     border: 1px solid #e0e0e0;
-    text-align: left;
     display: flex;
     flex-direction: column;
-    height: auto;
-    box-sizing: border-box;
-    overflow: hidden;
+    text-align: left;
     box-sizing: border-box;
 }
 
 .card.weather-widget-card {
-    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 20px;
-    flex-wrap: nowrap; /* 🔁 force it to stay side-by-side */
+    gap: 10px;
+    flex-wrap: nowrap;
+    padding-bottom: 3px;
 }
 
-.weather-card {
-    text-align: center; /* Center all content inside the weather card */
+.weather-card,
+.outfit-card,
+.image-suggestions-card {
+    text-align: center;
 }
 
-.weather-box-text {
-  flex: 1 1 0;
-  min-width: 0;             /* ✅ Prevents unwanted wrapping */
-  margin-right: 20px;
-  margin-left: 20px;   /* ✅ Add some horizontal margin */
-}
-
-
-.weather-card p {
-    text-align: center;     
-    display: inline-block;
-    max-width: 100%;
-    font-size: 16px;
+.weather-card p,
+.outfit-card p,
+.image-suggestions-card p {
+    font-size: 15px;
     line-height: 1.6;
+    margin: 8px 0;
     color: #555;
-    margin: 8px auto;
-    overflow-wrap: normal;
-    word-break: normal;
-}
-
-.weather-card p i {
-    display: inline-block;
-    margin-right: 8px;
-    color: #666;
 }
 
 .weather-card h2,
@@ -249,8 +220,6 @@ header h1 {
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
-    text-align: center;
-    display: block;
 }
 
 .weather-card h2 .fas,
@@ -262,29 +231,6 @@ header h1 {
 
 .outfit-card h2 .fas {
     color: #ffd700;
-}
-
-.weather-card p,
-.outfit-card p {
-    font-size: 15px;
-    line-height: 1.6;
-    margin: 8px 0;
-    color: #555;
-}
-
-.weather-card p i {
-    margin-right: 8px;
-    color: #666;
-}
-
-.image-suggestions-card {
-    text-align: center;
-}
-
-.image-suggestions-card p {
-    font-size: 1em;
-    color: #666;
-    margin-bottom: 15px;
 }
 
 .pinterest-images {
@@ -337,18 +283,12 @@ header h1 {
     box-shadow: 0 6px 12px rgba(230, 0, 35, 0.4);
 }
 
-.pinterest-button i,
-.back-button-bottom i {
-    margin-right: 10px;
-}
-
 .back-button-bottom {
-    background-color: #343a40;
-    color: #fff;
+    background: #343a40;
 }
 
 .back-button-bottom:hover {
-    background-color: #212529;
+    background: #212529;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
@@ -361,7 +301,7 @@ header h1 {
     gap: 20px;
     padding: 20px;
     border-radius: 12px;
-    background-color: #ffffff;
+    background: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border: 1px solid #e0e0e0;
 }
@@ -387,47 +327,57 @@ header h1 {
     padding-bottom: 10px;
 }
 
-/* === Animated Widget === */
 .animated-widget {
     width: 320px;
     transform: scale(0.8);
     transform-origin: top left;
     position: relative;
-    height: auto;            /* ✅ Let it shrink to fit */
+    height: auto;
     display: inline-block;
-    }
+}
 
 .animated-widget-wrapper {
     flex: 0 0 auto;
-    max-width: 350px;        /* adjust as needed */
+    max-width: 350px;
     overflow: hidden;
     display: flex;
-    justify-content: flex-start;  /* 🔁 moves widget more LEFT */
-    align-self: flex-start;
-    padding-left: 10px;      /* optional: more left shift */
+    justify-content: flex-start;
+    align-self: center;
+    padding-left: 10px;
     box-sizing: border-box;
+    margin-top: 20px;
 }
 
 .animated-widget .frame {
     position: relative;
-    width: 300px;
-    height: 280px;
-    background: linear-gradient(to top, #1e3c72, #2a5298);
+    width: 100%;
+    min-height: 280px;
     border-radius: 12px;
     overflow: hidden;
-    padding: 10px;
+    padding: 30px 20px 10px 20px;
     color: white;
+    transition: background 0.5s ease;
+}
+
+body[data-night="false"] .animated-widget .frame {
+  background: linear-gradient(to top, #87CEFA, #B0E0E6); /* Light blue shades */
+}
+
+/* If night time */
+body[data-night="true"] .animated-widget .frame {
+  background: linear-gradient(to top, #1e3c72, #2a5298); /* Deep night blue */
 }
 
 .animated-widget .moon {
     position: absolute;
-    top: 20px;
-    right: 10px;
+    top: 35px;
+    right: 30px;
     width: 100px;
     height: 100px;
     background: #fff;
     border-radius: 50%;
     box-shadow: inset -8px -8px 0 0 #ccc;
+    animation: moonPulse 3s infinite ease-in-out;
 }
 
 .animated-widget .moon-crater1,
@@ -451,6 +401,48 @@ header h1 {
     height: 4px;
 }
 
+@keyframes moonPulse {
+0% {
+    transform: scale(1);
+    opacity: 1;
+}
+50% {
+    transform: scale(1.05);
+    opacity: 0.85;
+}
+100% {
+    transform: scale(1);
+    opacity: 1;
+}
+}
+
+.animated-widget .sun {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #FFD700, #FFA500);
+    border-radius: 50%;
+    box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.6);
+    animation: pulseSun 4s ease-in-out infinite;
+}
+
+@keyframes sunPulse {
+0% {
+    transform: scale(1);
+    box-shadow: 0 0 20px 8px rgba(255, 200, 0, 0.6);
+}
+50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.8);
+}
+100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px 8px rgba(255, 200, 0, 0.6);
+}
+}
+
 .animated-widget .temperature {
     font-size: 24px;
     font-weight: bold;
@@ -462,17 +454,20 @@ header h1 {
 
 .animated-widget .preview {
     font-size: 13px;
-    color: #ddd;
+    color: #fff;
 }
 
 .animated-widget .proverb {
     position: absolute;
-    bottom: 5px;
-    font-size: 12px;
-    font-style: italic;
+    bottom: 10px;
+    left: 0;
     width: 100%;
     text-align: center;
-    color: #f0f0f0;
+    font-size: 12px;
+    font-style: italic;
+    color: #fff;
+    padding: 0 10px;
+    line-height: 1.2;
 }
 
 .animated-widget .drop-big-1,
@@ -488,98 +483,84 @@ header h1 {
 }
 
 @keyframes rainDrop {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(200px);
-        opacity: 0;
-    }
+0% {
+    transform: translateY(0);
+}
+100% {
+    transform: translateY(200px);
+    opacity: 0;
+}
 }
 
-/* === Responsive Adjustments === */
 @media (max-width: 768px) {
-    .header-buttons {
-        flex-direction: row;
-        gap: 5px;
-        align-items: center;
-    }
+.header-buttons {
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+}
 
-    header h1 {
-        font-size: 20px;
-        text-align: left;
-    }
+header h1 {
+    font-size: 20px;
+    text-align: left;
+}
 
-    .container {
-        padding: 15px;
-        margin: 15px auto;
-        width: 95%;
-    }
+.container {
+    padding: 15px;
+    margin: 15px auto;
+    width: 95%;
+}
 
-    .info-calendar-container {
-        flex-direction: column;
-    }
+.info-calendar-container {
+    flex-direction: column;
+}
 
-    .info-box,
-    .calendar-box {
-        width: 100%;
-    }
+.info-box,
+.calendar-box {
+    width: 100%;
+}
 
-    .button-group {
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-    }
+.button-group {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
 
-    .pinterest-button,
-    .back-button-bottom {
-        width: calc(100% - 20px);
-        margin: 0;
-    }
+.pinterest-button,
+.back-button-bottom {
+    width: calc(100% - 20px);
+    margin: 0;
+}
 
-    .pinterest-images {
-        flex-direction: column;
-        align-items: center;
-    }
+.pinterest-images {
+    flex-direction: column;
+    align-items: center;
+}
 
-    .pinterest-img {
-        width: 80%;
-        height: auto;
-    }
+.pinterest-img {
+    width: 80%;
+    height: auto;
+}
 
-    .weather-info-widget {
-        flex-direction: column;
-    }
+.weather-info-widget {
+    flex-direction: column;
+}
 }
 
 @media (max-width: 480px) {
-    .weather-card p,
-    .outfit-card p,
-    .image-suggestions-card p {
-        font-size: 0.9em;
-    }
+.weather-card p,
+.outfit-card p,
+.image-suggestions-card p {
+    font-size: 0.9em;
+}
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+from {
+    opacity: 0;
+    transform: translateY(10px);
 }
-
-.outfit-content {
-  margin-top: 20px;           /* space below the heading */
-  text-align: center;         /* center the text */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+to {
+    opacity: 1;
+    transform: translateY(0);
 }
-
-.outfit-content p {
-  width: 100%;
-  max-width: 600px;
 }

@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* Body background and layout */
+body {
+  background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
+  background-size: 400% 400%;
+  animation: gradientBG 18s ease infinite;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container for both boxes */
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* ensures mobile responsiveness */
+  gap: 40px;
+  padding: 40px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+/* Shared style for both boxes */
+.weather-style-box {
+  background: #fff;
+  padding: 56px 48px;
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 420px; /* default width */
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Make the left box wider */
+.weather-style-box.left {
+  max-width: 650px;   /* or 640px or 700px, depending on design */
+  text-align: left;   /* optional: for better readability */
+}
+
+/* Heading styles inside boxes */
+.weather-style-box h2 {
+  margin: 0 0 18px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+}
+
+.weather-style-box h3 {
+  margin: 16px 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+  text-align: left;
+}
+
+/* Paragraph styles inside boxes */
+.weather-style-box p {
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.8;     /* increased for easier reading */
+  color: #444;
+  text-align: left;     /* switch from center to left */
+}
+
+/* Submit button */
+.btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.benefits-list {
+  text-align: center;
+  margin: 16px 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 14px;
+  color: #444;
+}
+
+.benefits-list li {
+  margin-bottom: 8px;
+}
+
+/* Optional animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

@@ -7,7 +7,11 @@ import openai
 import traceback
 from dotenv import load_dotenv
 import re
-import datetime
+import datetime 
+import pytz
+from geopy.geocoders import Nominatim
+from timezonefinder import TimezoneFinder
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
@@ -70,7 +74,7 @@ def init_db():
         conn.commit()
         cursor.close()
         conn.close()
-        print("✅ PostgreSQL 테이블 생성 완료")
+        print("PostgreSQL 테이블 생성 완료")
     except Exception as e:
         print(f" 오류 발생: {str(e)}")
 
@@ -83,9 +87,21 @@ def init_db_route():
 
     try:
         init_db()
-        return "✅ PostgreSQL 테이블 생성 완료!"
+        return "PostgreSQL 테이블 생성 완료!"
     except Exception as e:
         return f"오류 발생: {str(e)}"
+
+def get_timezone_from_city(city_name):
+    try:
+        geolocator = Nominatim(user_agent="styleit-app")
+        location = geolocator.geocode(city_name)
+        if location:
+            tf = TimezoneFinder()
+            tz_name = tf.timezone_at(lng=location.longitude, lat=location.latitude)
+            return tz_name
+    except Exception as e:
+        print(f"Error finding timezone for {city_name}: {e}")
+    return "UTC"  # fallback
 
 
 def get_weather_info(city):
@@ -155,7 +171,11 @@ def parse_weather(weather_data, city):
 
     return (weather_info, temp, feels_like, temp_max, temp_min,
         cloud_status, humidity, wind_status, description, wind_speed,
-        rain_status, wind_status_txt)
+        rain_status, wind_status_txt, rain)
+
+def is_night_time(hour):
+    return hour < 6 or hour >= 18
+
 def get_pinterest_images(query, google_api_key, cx_id):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -235,6 +255,10 @@ def signup():
         
     return render_template('signup.html')
 
+@app.route('/homepage', methods=["GET"])
+def homepage():
+    return render_template('homepage.html')
+
 @app.route('/login', methods = ["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -250,7 +274,7 @@ def login():
             session['username'] = username
             cursor.close()
             conn.close()
-            return redirect(url_for('weather_style'))
+            return redirect(url_for('homepage'))
         else:
             flash("Please check your username or password again.")
             cursor.close()
@@ -258,6 +282,7 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
 
 @app.route('/mypage')
 def mypage():
@@ -300,11 +325,12 @@ def mypage():
         history_data=history_data,
     )
 
-
 @app.route('/Style-It', methods=["GET"])
 def weather_style():
-    return render_template("weather_style.html")
-
+    df = pd.read_csv('cities.csv', header=None)  
+    df.columns = ['City'] 
+    city_list = sorted(df['City'].dropna().unique())
+    return render_template('weather_style.html', cities=city_list)
 
 @app.route('/result', methods=["GET", "POST"])
 def result():
@@ -324,8 +350,14 @@ def result():
         flash("Failed to fetch weather data.")
         return redirect(url_for('weather_style'))
 
-    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt = parse_weather(weather_data, city)
-
+    weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt, is_raining = parse_weather(weather_data, city)
+    
+    tz_name = get_timezone_from_city(city)
+    tz = pytz.timezone(tz_name)
+    now = datetime.datetime.now(tz)
+    hour = now.hour
+    
+    #gpt prompt 보내기
     try:
         prompt = f"""You are a fashion coordinator who understands weather very well.
     {weather_info}
@@ -362,25 +394,6 @@ def result():
 
     outfit_dict = reply_from_gpt(gpt_reply)
 
-    emoji_map = {
-        "Outerwear": "🧥",
-        "Top": "👕",
-        "Bottom": "👖",
-        "Shoes": "👟",
-        "Accessories": "👜",
-        "Additional Consideration": "💡"}
-
-    style_emoji_map = {
-        "casual": "👖",
-        "minimal": "👕",
-        "street": "👟",
-        "chic": "🕶️",
-        "girlish": "👗",
-        "vintage": "🧥",
-        "formal": "👔",
-        "classic": "🧑‍💼",
-        "sporty": "🎽"}
-    style_icon = style_emoji_map.get(style.lower(), "🧍")
 
     search_query = build_search_query(outfit_dict, gender, style)
     image_urls = get_pinterest_images(search_query, GOOGLE_API_KEY, CX)
@@ -412,7 +425,6 @@ def result():
     return render_template("result.html",
                             city=city,
                             style=style,
-                            style_icon=style_icon,
                             temp=temp,
                             feels_like=feels_like,
                             temp_max=temp_max,
@@ -423,14 +435,16 @@ def result():
                             description=description,
                             gpt_reply=gpt_reply,
                             outfit=outfit_dict,
-                            emoji=emoji_map,
                             search_url=search_url,
                             image_urls=image_urls,
                             search_query=search_query,
                             current_date=current_date_formatted,
                             current_month_name=current_month_name,
                             current_year=current_year,
-                            current_day=current_day
+                            current_day=current_day,
+                            is_night=is_night_time(hour),
+                            is_raining=is_raining,
+                            hour=hour
                             )
 
 
@@ -438,31 +452,6 @@ def result():
 def logout():
     session.clear()
     return redirect(url_for('index'))
-
-
-@app.route('/view-users')
-def view_users():
-    secret = request.args.get("key")
-    if secret != "styleit_admin_2025":  
-        return "접근 불가: 인증 키가 필요합니다", 403
-
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
-        users = cursor.fetchall()
-        cursor.close()
-        conn.close()
-
-        def format_date(t):
-            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
-
-        return "<br>".join([
-            f"Joined: {format_date(u[2])} |  Name: {u[0]} |  Gender: {u[1]}"
-            for u in users
-        ])
-    except Exception as e:
-        return f"오류 발생: {str(e)}"
 
 
 @app.route('/reset-db')
@@ -484,13 +473,34 @@ def reset_db():
         return f"오류: {str(e)}"
 
 
+@app.route('/view-users')
+def view_users():
+    secret = request.args.get("key")
+    if secret != "styleit_admin_2025":  
+        return "접근 불가: 인증 키가 필요합니다", 403
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
+        users = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        def format_date(t):
+            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
+
+        return  render_template("view_users.html", users=users)
+    except Exception as e:
+        return f"오류 발생: {str(e)}"
+
 @app.route('/submit-feedback', methods=['POST'])
 def submit_feedback():
     name = request.form.get('name')
     content = request.form.get('content')
 
     if not name or not content:
-        return "lease enter both your name and content.", 400
+        return "Please enter both your name and content.", 400
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -500,7 +510,6 @@ def submit_feedback():
     conn.close()
 
     return "Thank you! Your feedback is submitted"
-
 
 @app.route('/view-feedback')
 def view_feedback():

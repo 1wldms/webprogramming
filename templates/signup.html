@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Style-It | Sign Up</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
 </head>
 
 <body>
@@ -44,31 +45,27 @@
 
   <script src="{{ url_for('static', filename='js/signup.js') }}"></script>
 
+  <button id="feedback-btn">💬 Feedback</button>
 
-<!-- interactive gradient follow-mouse -->
-<script>
-  document.addEventListener('mousemove', e => {
-  const x = e.clientX / window.innerWidth  * 100;
-  const y = e.clientY / window.innerHeight * 100;
-  document.documentElement.style.setProperty('--x', `${x}%`);
-  document.documentElement.style.setProperty('--y', `${y}%`);
-});
+  <div id="feedback-modal" class="hidden">
+    <form id="feedback-form">
+      <h2 style="margin-bottom: 20px;">💌 Feedback</h2>
+  
+      <div class="form-group">
+        <label for="feedback-name">Your Name</label>
+        <input type="text" id="feedback-name" name="name" required />
+      </div>
+  
+      <div class="form-group">
+        <label for="feedback-content">Your Feedback</label>
+        <textarea id="feedback-content" name="content" rows="4" required></textarea>
+      </div>
+  
+      <button type="submit" class="btn active">Submit</button>
+      <button type="button" class="btn" onclick="closeFeedback()">Close</button>
+    </form>
+  </div>
 
-const card = document.querySelector('.signup-box');
-
-card.addEventListener('mousemove', e => {
-  const r = card.getBoundingClientRect();
-  const bx = (e.clientX - r.left) / r.width  * 100;
-  const by = (e.clientY - r.top ) / r.height * 100;
-  card.style.setProperty('--bx', `${bx}%`);
-  card.style.setProperty('--by', `${by}%`);
-});
-
-card.addEventListener('mouseleave', () => {
-  card.style.setProperty('--bx', '50%');
-  card.style.setProperty('--by', '50%');
-});
-</script>
-
+  <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
 </body>
 </html>
