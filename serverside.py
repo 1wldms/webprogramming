@@ -459,6 +459,8 @@ def result():
 
     cursor.close()
     conn.close()
+    is_raining = 'rain' in description.lower()
+    positions = spaced_positions(15) if is_raining else []
 
     return render_template("result.html",
                             city=city,
@@ -479,10 +481,12 @@ def result():
                             current_month=current_month, 
                             current_year=current_year, 
                             current_day=current_day,
+                            current_date=current_date_formatted,
                             hour=hour,
                             is_night=is_night,
                             is_raining=is_raining,
-                            )
+                            positions=positions
+                        )
 
 
 @app.route('/logout')
