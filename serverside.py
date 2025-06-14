@@ -496,18 +496,15 @@ def reset_db():
     secret = request.args.get("key")
     if secret != "styleit_admin_2025":
         return "접근 거부", 403
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("DROP TABLE IF EXISTS history;")
-        cursor.execute("DROP TABLE IF EXISTS users;")
-        cursor.execute("DROP TABLE IF EXISTS feedback;")
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return "✅ 모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
-    except Exception as e:
-        return f"오류: {str(e)}"
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS feedback;")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return "모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
+
 
 
 @app.route('/view-users')
@@ -516,20 +513,15 @@ def view_users():
     if secret != "styleit_admin_2025":  
         return "접근 불가: 인증 키가 필요합니다", 403
 
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
-        users = cursor.fetchall()
-        cursor.close()
-        conn.close()
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, gender, created_at FROM users ORDER BY created_at DESC;")
+    users = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return  render_template("view_users.html", users=users)
 
-        def format_date(t):
-            return t.strftime('%Y-%m-%d %H:%M:%S') if t else "N/A"
-
-        return  render_template("view_users.html", users=users)
-    except Exception as e:
-        return f"오류 발생: {str(e)}"
 
 @app.route('/submit-feedback', methods=['POST'])
 def submit_feedback():
