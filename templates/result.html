@@ -10,9 +10,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
 </head>
 <body data-hour="{{ hour }}" data-night="{{ 'true' if is_night else 'false' }}">
-  <p>TEST HTML RENDERING</p>
-  <p>Rain Status: {{ is_raining }}</p>
-  <p>Debug Rain Status: {{ is_raining }}</p>
   <div class="container">
     <header>
       <h1>Weather and Style Recommendation</h1>
@@ -87,18 +84,21 @@
             <div class="proverb">"Frogs croaking in the lagoon,<br/>Means rain will come real soon."</div>
           </div>
         {% if is_raining %}
-          <div class="drop" style="left: 10%; animation-delay: 0s;"></div>
+          <div class="drop" style="left:  5%;  animation-delay: 0s;"></div>
+          <div class="drop" style="left: 10%; animation-delay: 0.1s;"></div>
           <div class="drop" style="left: 20%; animation-delay: 0.2s;"></div>
           <div class="drop" style="left: 30%; animation-delay: 0.4s;"></div>
           <div class="drop" style="left: 40%; animation-delay: 0.6s;"></div>
           <div class="drop" style="left: 50%; animation-delay: 0.8s;"></div>
+          <div class="drop" style="left: 60%; animation-delay: 1.0s;"></div>
+          <div class="drop" style="left: 70%; animation-delay: 1.2s;"></div>
+          <div class="drop" style="left: 80%; animation-delay: 1.4s;"></div>
+          <div class="drop" style="left: 90%; animation-delay: 1.6s;"></div>
         {% endif %}
         </div>
       </div>
     </div>
   </div>
-  <!-- raindrop test -->
-   <div class="drop" style="left: 50%; animation-delay: 0s;"></div>
 
   <!-- Outfit card -->
   <div class="card outfit-card">
