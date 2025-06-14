@@ -456,9 +456,9 @@ def result():
                             current_month_name=current_month_name,
                             current_year=current_year,
                             current_day=current_day,
-                            is_night=is_night_in(hour),
+                            hour=hour,
+                            is_night=is_night,
                             is_raining=is_raining,
-                            hour=hour
                             )
 
 
