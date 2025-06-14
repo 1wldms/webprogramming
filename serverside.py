@@ -16,6 +16,7 @@ import datetime as dt
 import random
 
 
+
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
 app.jinja_env.globals.update(spaced_positions=spaced_positions)
@@ -105,13 +106,6 @@ def get_timezone_from_city(city_name):
         print(f"Error finding timezone for {city_name}: {e}")
     return "UTC"  # fallback
 
-def spaced_positions(count, min_gap=3):
-    positions = []
-    while len(positions) < count:
-        candidate = random.randint(5, 95)
-        if all(abs(candidate - p) >= min_gap for p in positions):
-            positions.append(candidate)
-    return positions
 
 def get_weather_info(city):
     lang = 'eng'
