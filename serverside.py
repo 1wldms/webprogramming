@@ -365,7 +365,7 @@ def result():
     weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt, is_raining = parse_weather(weather_data, city)
     
     tz_name = get_timezone_from_city(city)
-    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")Add commentMore actions
+    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")
     print(f"DEBUG: Local time = {dt.datetime.now(pytz.timezone(tz_name))}")
     is_night, hour = is_night_in(tz_name)  # <-- this line was missing
     tz = pytz.timezone(tz_name)
