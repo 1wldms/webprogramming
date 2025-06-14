@@ -516,3 +516,4 @@ def view_feedback():
     conn.close()
 
     return render_template("feedback_list.html", feedbacks=data)
+
