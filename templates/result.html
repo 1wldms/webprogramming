@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
 </head>
 <body data-hour="{{ hour }}" data-night="{{ 'true' if is_night else 'false' }}">
+  <p>TEST HTML RENDERING</p>
+  <p>Rain Status: {{ is_raining }}</p>
+  <p>Debug Rain Status: {{ is_raining }}</p>
   <div class="container">
     <header>
       <h1>Weather and Style Recommendation</h1>
@@ -84,16 +87,18 @@
             <div class="proverb">"Frogs croaking in the lagoon,<br/>Means rain will come real soon."</div>
           </div>
         {% if is_raining %}
-          {% for pos in positions %}
-             <div class="drop"
-                style="left: {{ pos }}%; animation-delay: {{ (loop.index0 * 0.15)|round(2) }}s;">
-            </div>
-          {% endfor %}
+          <div class="drop" style="left: 10%; animation-delay: 0s;"></div>
+          <div class="drop" style="left: 20%; animation-delay: 0.2s;"></div>
+          <div class="drop" style="left: 30%; animation-delay: 0.4s;"></div>
+          <div class="drop" style="left: 40%; animation-delay: 0.6s;"></div>
+          <div class="drop" style="left: 50%; animation-delay: 0.8s;"></div>
         {% endif %}
         </div>
       </div>
     </div>
   </div>
+  <!-- raindrop test -->
+   <div class="drop" style="left: 50%; animation-delay: 0s;"></div>
 
   <!-- Outfit card -->
   <div class="card outfit-card">
