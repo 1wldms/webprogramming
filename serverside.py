@@ -182,7 +182,6 @@ def parse_weather(weather_data, city):
         cloud_status, humidity, wind_status, description, wind_speed,
         rain_status, wind_status_txt, rain)
 
-More actions
 def is_night_in(city_timezone):
     tz = pytz.timezone(city_timezone)
     local_time = dt.datetime.now(tz)  
