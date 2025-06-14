@@ -394,6 +394,7 @@ def result():
 
     outfit_dict = reply_from_gpt(gpt_reply)
 
+
     search_query = build_search_query(outfit_dict, gender, style)
     image_urls = get_pinterest_images(search_query, GOOGLE_API_KEY, CX)
     search_url = f"https://www.pinterest.com/search/pins/?q={search_query.replace(' ', '+')}"
@@ -434,7 +435,6 @@ def result():
                             description=description,
                             gpt_reply=gpt_reply,
                             outfit=outfit_dict,
-                            emoji=emoji_map,
                             search_url=search_url,
                             image_urls=image_urls,
                             search_query=search_query,
