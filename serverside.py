@@ -329,6 +329,18 @@ def mypage():
 
     cursor.close()
     conn.close()
+    if history_data:
+        last_city = history_data[0][4]  # index 4 should be city based on your SQL SELECT
+    else:
+        last_city = "Seoul"  # fallback default
+    tz_name = get_timezone_from_city(last_city)
+    tz = pytz.timezone(tz_name)
+    now = dt.datetime.now(tz)
+
+    current_date_formatted = now.strftime("%B %d, %Y")
+    current_month = now.month - 1  # JS months are 0-indexed
+    current_year = now.year
+    current_day = now.day
 
     return render_template(
         "mypage.html",
@@ -366,12 +378,23 @@ def result():
     weather_info, temp, feels_like, temp_max, temp_min, cloud_status, humidity, wind_status, description, wind_speed, rain_status, wind_status_txt, is_raining = parse_weather(weather_data, city)
     
     tz_name = get_timezone_from_city(city)
-    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")
-    print(f"DEBUG: Local time = {dt.datetime.now(pytz.timezone(tz_name))}")
-    is_night, hour = is_night_in(tz_name)  # <-- this line was missing
     tz = pytz.timezone(tz_name)
     now = dt.datetime.now(tz)
+
+# Now extract time values from 'now'
     hour = now.hour
+    current_date_formatted = now.strftime("%B %d, %Y")
+    current_month_name = now.strftime("%B")
+    current_year = now.year
+    current_day = now.day
+    current_month = now.month - 1  # for JavaScript
+
+# Determine if it's night
+    is_night = hour < 6 or hour >= 18  # avoid re-calling datetime
+
+# DEBUG prints (optional)
+    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")
+    print(f"DEBUG: Local time = {now}")
     
     #gpt prompt 보내기
     try:
@@ -453,9 +476,8 @@ def result():
                             search_url=search_url,
                             image_urls=image_urls,
                             search_query=search_query,
-                            current_date=current_date_formatted,
-                            current_month_name=current_month_name,
-                            current_year=current_year,
+                            current_month=current_month, 
+                            current_year=current_year, 
                             current_day=current_day,
                             hour=hour,
                             is_night=is_night,
@@ -540,3 +562,4 @@ def view_feedback():
     conn.close()
 
     return render_template("feedback_list.html", feedbacks=data)
+
