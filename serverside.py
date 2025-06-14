@@ -392,10 +392,6 @@ def result():
 # Determine if it's night
     is_night = hour < 6 or hour >= 18  # avoid re-calling datetime
 
-# DEBUG prints (optional)
-    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")
-    print(f"DEBUG: Local time = {now}")
-    
     #gpt prompt 보내기
     try:
         prompt = f"""You are a fashion coordinator who understands weather very well.
