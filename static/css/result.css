@@ -340,7 +340,7 @@ header h1 {
   align-self: center;
   padding-left: 10px;
   box-sizing: border-box;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 .animated-widget .frame {
@@ -465,7 +465,7 @@ body[data-night="true"] .animated-widget .frame {
   border-radius: 2px;
   top: -20px;
   animation: rainDrop 1.2s linear infinite;
-  z-index: 10;
+  z-index: 9999 !important;
 }
 
 /* BIG drops */

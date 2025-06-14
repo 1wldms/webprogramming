@@ -392,10 +392,6 @@ def result():
 # Determine if it's night
     is_night = hour < 6 or hour >= 18  # avoid re-calling datetime
 
-# DEBUG prints (optional)
-    print(f"DEBUG: Timezone from city '{city}' = {tz_name}")
-    print(f"DEBUG: Local time = {now}")
-    
     #gpt prompt 보내기
     try:
         prompt = f"""You are a fashion coordinator who understands weather very well.
@@ -459,6 +455,8 @@ def result():
 
     cursor.close()
     conn.close()
+    is_raining = 'rain' in description.lower()
+    positions = spaced_positions(15) if is_raining else []
 
     return render_template("result.html",
                             city=city,
@@ -479,10 +477,12 @@ def result():
                             current_month=current_month, 
                             current_year=current_year, 
                             current_day=current_day,
+                            current_date=current_date_formatted,
                             hour=hour,
                             is_night=is_night,
                             is_raining=is_raining,
-                            )
+                            positions=positions
+                        )
 
 
 @app.route('/logout')
