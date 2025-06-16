@@ -548,7 +548,7 @@ def view_feedback():
 
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT name, content, created_at FROM feedback ORDER BY created_at DESC;")
+    cursor.execute("SELECT id, name, content, created_at FROM feedback ORDER BY created_at DESC;")
     data = cursor.fetchall()
     cursor.close()
     conn.close()
