@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 body {
@@ -340,7 +341,7 @@ header h1 {
   align-self: center;
   padding-left: 10px;
   box-sizing: border-box;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .animated-widget .frame {
@@ -575,7 +576,6 @@ body[data-night="true"] .animated-widget .frame {
     flex-direction: column;
   }
 }
-
 
 @media (max-width: 480px) {
   .weather-card p,
