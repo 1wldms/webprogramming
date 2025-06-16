@@ -127,7 +127,7 @@ def get_weather_info(city):
         return weather_data
     except:
         return None
-    
+
 
 def parse_weather(weather_data, city):
     temp = weather_data['main']['temp']

@@ -84,21 +84,18 @@
             <div class="proverb">"Frogs croaking in the lagoon,<br/>Means rain will come real soon."</div>
           </div>
         {% if is_raining %}
-          <div class="drop" style="left:  5%;  animation-delay: 0s;"></div>
-          <div class="drop" style="left: 10%; animation-delay: 0.1s;"></div>
+          <div class="drop" style="left: 10%; animation-delay: 0s;"></div>
           <div class="drop" style="left: 20%; animation-delay: 0.2s;"></div>
           <div class="drop" style="left: 30%; animation-delay: 0.4s;"></div>
           <div class="drop" style="left: 40%; animation-delay: 0.6s;"></div>
           <div class="drop" style="left: 50%; animation-delay: 0.8s;"></div>
-          <div class="drop" style="left: 60%; animation-delay: 1.0s;"></div>
-          <div class="drop" style="left: 70%; animation-delay: 1.2s;"></div>
-          <div class="drop" style="left: 80%; animation-delay: 1.4s;"></div>
-          <div class="drop" style="left: 90%; animation-delay: 1.6s;"></div>
         {% endif %}
         </div>
       </div>
     </div>
   </div>
+  <!-- raindrop test -->
+   <div class="drop" style="left: 50%; animation-delay: 0s;"></div>
 
   <!-- Outfit card -->
   <div class="card outfit-card">
@@ -147,8 +144,8 @@
         <label for="feedback-content">Your Feedback</label>
         <textarea id="feedback-content" name="content" rows="4" required></textarea>
       </div>
-      <button type="submit" class="feedback_btn active">Submit</button>
-      <button type="button" class="feedback_btn" onclick="closeFeedback()">Close</button>
+      <button type="submit" class="btn active">Submit</button>
+      <button type="button" class="btn" onclick="closeFeedback()">Close</button>
     </form>
   </div>
 
@@ -244,3 +241,6 @@
     }
   };
 </script>
+
+</body>
+</html>

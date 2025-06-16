@@ -35,19 +35,30 @@
       {% if history_data %}
         {% for date, style, query, img, city, weather_temp, weather_feels_like, rain_status, wind_status in history_data %}
         <div class="history-card" data-date="{{ date[:10] }}">
-          <div class="history-left">
-            <div class="text-block">
-              <p class="history-title">📅 {{ date }} | 📍 {{ city }} 🎨 {{ style }}</p>
-              <p>🌡️ {{ weather_temp|int }}°C (Feels like {{ weather_feels_like|int }}°C)</p>
-              <p>{{ rain_status }} | {{ wind_status }}</p>
-              <p>🔍 {{ query }}</p>
-            </div>
-            <div class="pinterest-wrapper">
-              <a href="https://www.pinterest.com/search/pins/?q={{ query|replace(' ', '+') }}" target="_blank" class="pinterest-button">
-                <i class="fab fa-pinterest"></i> Pinterest
-              </a>
-            </div>
-          </div>
+    <div class="history-left">
+      <div class="text-block">
+        <p class="history-title">📅 {{ date }} | 📍 {{ city }} 🎨 {{ style }}</p>
+      
+      <!-- Temperature with both °C and °F -->
+        <p>
+          🌡️ {{ weather_temp|int }}°C ({{ (weather_temp * 9 / 5 + 32)|round(0) }}°F)
+          (Feels like {{ weather_feels_like|int }}°C / {{ (weather_feels_like * 9 / 5 + 32)|round(0) }}°F)
+        </p>
+
+      <!-- Weather status -->
+        <p>{{ rain_status }} | {{ wind_status }}</p>
+      
+      <!-- Search query -->
+        <p>🔍 {{ query }}</p>
+      </div>
+
+      <div class="pinterest-wrapper">
+        <a href="https://www.pinterest.com/search/pins/?q={{ query|replace(' ', '+') }}" target="_blank" class="pinterest-button">
+          <i class="fab fa-pinterest"></i> Pinterest
+         </a>
+        </div>
+      </div>
+    </div>
           <div class="history-img">
             <img src="{{ img }}" alt="outfit image">
           </div>
