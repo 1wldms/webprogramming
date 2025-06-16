@@ -40,11 +40,8 @@
         <p class="history-title">📅 {{ date }} | 📍 {{ city }} 🎨 {{ style }}</p>
       
       <!-- Temperature with both °C and °F -->
-        <p>
-          🌡️ {{ weather_temp|float|round(1) }}°C ({{ (weather_temp|float * 9 / 5 + 32)|round(0) }}°F)
-          (Feels like {{ weather_feels_like|int }}°C / {{ (weather_feels_like * 9 / 5 + 32)|round(0) }}°F)
-        </p>
-
+        <p>🌡️ {{ weather_temp|float|round(1) }}°C ({{ (weather_temp|float * 9 / 5 + 32)|round(0) }}°F)</p>
+        
       <!-- Weather status -->
         <p>{{ rain_status }} | {{ wind_status }}</p>
       
