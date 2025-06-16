@@ -10,9 +10,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
 </head>
 <body data-hour="{{ hour }}" data-night="{{ 'true' if is_night else 'false' }}">
-  <p>TEST HTML RENDERING</p>
-  <p>Rain Status: {{ is_raining }}</p>
-  <p>Debug Rain Status: {{ is_raining }}</p>
   <div class="container">
     <header>
       <h1>Weather and Style Recommendation</h1>
