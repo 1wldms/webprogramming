@@ -15,19 +15,8 @@ import psycopg2
 import datetime as dt
 import random
 
-
-def spaced_positions(count, min_gap=3):
-    positions = []
-    while len(positions) < count:
-        candidate = random.randint(5, 95)
-        if all(abs(candidate - p) >= min_gap for p in positions):
-            positions.append(candidate)
-    return positions
-
-
 app = Flask(__name__)
 app.secret_key = "wekfjl`klkAWldI109nAKnooionrg923jnn"
-app.jinja_env.globals.update(spaced_positions=spaced_positions)
 
 load_dotenv()
 
@@ -456,7 +445,6 @@ def result():
     cursor.close()
     conn.close()
     is_raining = 'rain' in description.lower()
-    positions = spaced_positions(15) if is_raining else []
 
     return render_template("result.html",
                             city=city,
@@ -480,8 +468,7 @@ def result():
                             current_date=current_date_formatted,
                             hour=hour,
                             is_night=is_night,
-                            is_raining=is_raining,
-                            positions=positions
+                            is_raining=is_raining
                         )
 
 
