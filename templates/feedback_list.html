@@ -22,9 +22,6 @@
                 <td>{{ name }}</td>
                 <td>{{ content }}</td>
                 <td>{{ created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                <form action="{{ url_for('delete_feedback_manual', id=id) }}" method="GET" onsubmit="return confirm('정말 삭제할까요?');">
-                    <button type="submit">🗑️</button>
-                </form>
             </tr>
             {% endfor %}
         </tbody>
