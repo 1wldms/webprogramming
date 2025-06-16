@@ -36,15 +36,31 @@
 
   <!-- Weather card -->
   <div class="card weather-card-wrapper weather-widget-card">
-  <div class="weather-box">
-    <h2><i class="fas fa-cloud"></i> Current Weather</h2>
-    <p><i class="fas fa-thermometer-half"></i> Temperature: {{ temp|round(0) }}°C (Feels Like: {{ feels_like|round(0) }}°C)</p>
-    <p><i class="fas fa-temperature-high"></i> Max: {{ temp_max|round(0) }}°C / <i class="fas fa-temperature-low"></i> Min: {{ temp_min|round(0) }}°C</p>
-    <p><i class="fas fa-cloud"></i> Cloud: {{ cloud_status }}</p>
-    <p><i class="fas fa-wind"></i> Wind: {{ wind_status }}</p>
-    <p><i class="fas fa-tint"></i> Humidity: {{ humidity }}%</p>
-    <p><i class="fas fa-sun"></i> Condition: {{ description }}</p>
-  </div>
+    <div class="weather-box">
+      <h2><i class="fas fa-cloud"></i> Current Weather</h2>
+
+      <p>
+        <i class="fas fa-thermometer-half"></i> 
+        Temperature: 
+        {{ temp|round(0) }}°C 
+        ({{ (temp * 9 / 5 + 32)|round(0) }}°F) 
+        (Feels Like: {{ feels_like|round(0) }}°C / {{ (feels_like * 9 / 5 + 32)|round(0) }}°F)
+      </p>
+
+      <p>
+        <i class="fas fa-temperature-high"></i> 
+        Max: {{ temp_max|round(0) }}°C / {{ (temp_max * 9 / 5 + 32)|round(0) }}°F 
+        / 
+        <i class="fas fa-temperature-low"></i> 
+        Min: {{ temp_min|round(0) }}°C / {{ (temp_min * 9 / 5 + 32)|round(0) }}°F
+      </p>
+
+      <p><i class="fas fa-cloud"></i> Cloud: {{ cloud_status }}</p>
+      <p><i class="fas fa-wind"></i> Wind: {{ wind_status }}</p>
+      <p><i class="fas fa-tint"></i> Humidity: {{ humidity }}%</p>
+      <p><i class="fas fa-sun"></i> Condition: {{ description }}</p>
+      </div>
+    </div>
 
     <div class="animated-widget-wrapper">
       <div class="animated-widget">
