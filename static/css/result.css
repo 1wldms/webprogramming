@@ -576,6 +576,26 @@ body[data-night="true"] .animated-widget .frame {
   }
 }
 
+/* Flex layout for weather text + animated widget */
+.weather-layout-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Make sure the weather text box and widget have correct sizing */
+.weather-box {
+  flex: 1 1 300px;
+  max-width: 500px;
+}
+
+.animated-widget-wrapper {
+  flex: 0 0 320px;
+  margin-top: 0; /* override existing margin if needed */
+}
+
 @media (max-width: 480px) {
   .weather-card p,
   .outfit-card p,
