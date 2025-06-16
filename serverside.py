@@ -485,19 +485,20 @@ def reset_db():
     
     conn = get_connection()
     cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS users;")
+    cursor.execute("DROP TABLE IF EXISTS history;")
     cursor.execute("DROP TABLE IF EXISTS feedback;")
     conn.commit()
     cursor.close()
     conn.close()
-    return "모든 테이블 삭제 완료! 다시 /init-db 실행하세요."
-
+    return "모든 테이블 삭제. 다시 /init-db 실행"
 
 
 @app.route('/view-users')
 def view_users():
     secret = request.args.get("key")
     if secret != "styleit_admin_2025":  
-        return "접근 불가: 인증 키가 필요합니다", 403
+        return "접근 불가", 403
 
     conn = get_connection()
     cursor = conn.cursor()
