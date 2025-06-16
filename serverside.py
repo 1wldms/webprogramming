@@ -336,7 +336,7 @@ def mypage():
         username=username,
         password=password,
         gender=gender,
-        history_data=history_data,)
+        history_data=history_data)
 
 @app.route('/Style-It', methods=["GET"])
 def weather_style():
