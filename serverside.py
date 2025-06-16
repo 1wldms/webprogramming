@@ -555,3 +555,13 @@ def view_feedback():
 
     return render_template("feedback_list.html", feedbacks=data)
 
+
+@app.route('/delete-feedback-manual/<int:id>')
+def delete_feedback_manual(id):
+    conn = get_connection()                    
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM feedback WHERE id = %s;", (id,))  
+    conn.commit()                              
+    cursor.close()
+    conn.close()
+    return f"✅ ID {id} 피드백 삭제 완료!"
