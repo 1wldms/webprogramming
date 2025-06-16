@@ -106,7 +106,7 @@ body {
     transition: background-color 0.3s, transform 0.2s ease;
 }
 
-.btn.active {           /* will be enabled by JS */
+.btn.active {           
     cursor: pointer;
     opacity: 1;
 }
