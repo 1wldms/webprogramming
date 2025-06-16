@@ -104,6 +104,26 @@ body {
   margin-bottom: 8px;
 }
 
+.style-it{
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.style-it:hover {
+  background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
+  transform: translateY(-2px);
+}
+
 /* Optional animation keyframes */
 @keyframes fadeIn {
   from {
