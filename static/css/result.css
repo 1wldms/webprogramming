@@ -457,7 +457,6 @@ body[data-night="true"] .animated-widget .frame {
   line-height: 1.2;
 }
 
-/* Shared raindrop base */
 .animated-widget .drop {
   position: absolute;
   width: 3px;
@@ -469,7 +468,6 @@ body[data-night="true"] .animated-widget .frame {
   z-index: 9999 !important;
 }
 
-/* BIG drops */
 .animated-widget .drop-big-1 { left: 10%; animation-delay: 0s; }
 .animated-widget .drop-big-2 { left: 20%; animation-delay: 0.2s; }
 .animated-widget .drop-big-3 { left: 30%; animation-delay: 0.4s; }
@@ -481,7 +479,6 @@ body[data-night="true"] .animated-widget .frame {
 .animated-widget .drop-big-9 { left: 90%; animation-delay: 1.6s; }
 .animated-widget .drop-big-10 { left: 95%; animation-delay: 1.8s; }
 
-/* MEDIUM drops */
 .animated-widget .drop-medium-1 { left: 12%; animation-delay: 0.3s; }
 .animated-widget .drop-medium-2 { left: 22%; animation-delay: 0.5s; }
 .animated-widget .drop-medium-3 { left: 32%; animation-delay: 0.7s; }
@@ -493,7 +490,6 @@ body[data-night="true"] .animated-widget .frame {
 .animated-widget .drop-medium-9 { left: 92%; animation-delay: 1.9s; }
 .animated-widget .drop-medium-10 { left: 98%; animation-delay: 2.1s; }
 
-/* SMALL drops */
 .animated-widget .drop-small-1 { left: 15%; animation-delay: 0.15s; }
 .animated-widget .drop-small-2 { left: 25%; animation-delay: 0.35s; }
 .animated-widget .drop-small-3 { left: 35%; animation-delay: 0.55s; }

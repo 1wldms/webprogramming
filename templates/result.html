@@ -151,7 +151,6 @@
 
   <script src="{{ url_for('static', filename='js/feedback.js') }}" defer></script>
 
-<!-- Inject server-side variables into JavaScript -->
   <script>
     const currentMonth = {{ current_month }};
     const currentYear = {{ current_year }};
@@ -202,7 +201,6 @@
         dayCell.textContent = day;
         dayCell.classList.add('calendar-day');
 
-  // ✅ Use the passed-in currentDayHighlight instead of checking against today
         if (day === currentDayHighlight) {
           dayCell.classList.add('current-day');
         }

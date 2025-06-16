@@ -93,7 +93,6 @@
   <script src="{{ url_for('static', filename='js/feedback.js') }}" defer></script>
 
   <script>
-    // Toggle password visibility
     function togglePW() {
       const pw = document.getElementById("pw");
       const iconButton = document.querySelector(".password-section button");
@@ -102,7 +101,6 @@
       iconButton.innerHTML = isHidden ? "‍️" : "👁️";
     }
 
-    // Dynamic background
     document.addEventListener('mousemove', e => {
       const xPct = (e.clientX / window.innerWidth) * 100;
       const yPct = (e.clientY / window.innerHeight) * 100;
@@ -110,7 +108,6 @@
       document.documentElement.style.setProperty('--y', `${yPct}%`);
     });
 
-    // Filter history by selected date
     function filterHistory() {
       const selectedDate = document.getElementById("search-date").value;
       const cards = document.querySelectorAll(".history-card");
@@ -130,7 +127,6 @@
       noMsg.style.display = found ? "none" : "block";
     }
 
-    // ✅ Bind filter button after DOM is loaded
     document.addEventListener("DOMContentLoaded", function () {
       const filterBtn = document.getElementById("date-filter-btn");
       if (filterBtn) {
